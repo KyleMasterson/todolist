@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Retrieve all lists and get an Id
+RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists)
+id=$(echo $RESULT | cut -f1 ) # Needs formatting
+
+# Create new item
+curl -i -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' "http://info3103.cs.unb.ca:24842/lists/$id"
+
+# Retrieve all items and get an Id
+RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists/$id)
+item=$(echo $RESULT | cut -f1 ) # Needs formatting
+
+# Retrieve an item
+curl -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item"
+
+# Remove an item
+curl -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item"
