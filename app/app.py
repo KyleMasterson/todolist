@@ -4,8 +4,8 @@ from flask_session import Session
 from ldap3 import Server, Connection, ALL
 from ldap3.core.exceptions import *
 import ssl #include ssl libraries
-from flask import Flask, jsonify, abort, request, make_response
-from flask_restful import Resource, Api
+from flask import Flask, jsonify, abort, request, make_response, session
+from flask_restful import reqparse, Resource, Api
 import pymysql.cursors
 import json
 
@@ -14,10 +14,9 @@ import cgi
 import sys
 import settings # Our server and db settings, stored in settings.py
 
+app = Flask(__name__)
 api = Api(app)
 cgitb.enable()
-
-app = Flask(__name__)
 
 # Set Server-side session config: Save sessions in the local app directory.
 app.secret_key = settings.SECRET_KEY
@@ -95,10 +94,7 @@ class SignIn(Resource):
 				Success = True
 				username = session['username']
 				session.clear()
-			return make_response(jsonify({'Success': Success, 'Username': username}), 200) # turn set into json and return it
-
-api = Api(app)
-api.add_resource(SignIn, '/signin')
+			return make_response(jsonify({'Success': Success, 'Username': username}), 200)
 
 ####################################################################################
 #
@@ -338,7 +334,7 @@ class Item(Resource):
 # Identify/create endpoints and endpoint objects
 #
 api = Api(app)
-api.add_resource(SignIn, '/login')
+api.add_resource(SignIn, '/signin')
 api.add_resource(Lists, '/lists')
 api.add_resource(List, '/lists/<int:listId>')
 api.add_resource(Items, '/lists/<int:listId>/Items')
