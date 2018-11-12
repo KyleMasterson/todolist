@@ -35,7 +35,7 @@ END//
 	
 CREATE PROCEDURE getListById(IN listID INT(11))
 BEGIN
- SELECT * FROM lists
+  SELECT * FROM lists
   WHERE id = listID;
 END//
 	

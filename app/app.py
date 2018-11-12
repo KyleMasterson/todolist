@@ -128,7 +128,8 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getLists'
 			cursor = dbConnection.cursor()
-			cursor.callproc(sql)
+			sqlArgs = (Session['username'])
+			cursor.callproc(sql, sqlArgs)
 			rows = cursor.fetchall()
 		except:
 			abort(500)
@@ -140,11 +141,8 @@ class Lists(Resource):
 	def post(self):
 		if not request.json or not 'Name' in request.json:
 			abort(400)
-		name = request.json['Name'];
-		province = request.json['Province'];
-		language = request.json['Language'];
-		level = request.json['Level'];
-
+		title = request.json['title'];
+		description = request.json['descritpion'];
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
 				settings.DB_USER,
@@ -154,7 +152,7 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'createList'
 			cursor = dbConnection.cursor()
-			sqlArgs = (name, province, language, level)
+			sqlArgs = (Session['username'], title, description)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
 			dbConnection.commit()
@@ -208,7 +206,7 @@ class List(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteList'
 			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
+			sqlArgs = (listId)
 			cursor.callproc(sql,sqlArgs)
 		except:
 			abort(500)
@@ -238,14 +236,12 @@ class Items(Resource):
 			dbConnection.close()
 		return make_response(jsonify({'items': rows}), 200)
 
-	def post(self):
+	def post(self, listID):
 
 		if not request.json or not 'Name' in request.json:
 			abort(400)
-		name = request.json['Name'];
-		province = request.json['Province'];
-		language = request.json['Language'];
-		level = request.json['Level'];
+		title = request.json['title'];
+		description = request.json['description'];
 
 		try:
 			dbConnection = pymysql.connect(settings.DB_HOST,
@@ -256,7 +252,7 @@ class Items(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'createItem'
 			cursor = dbConnection.cursor()
-			sqlArgs = (name, province, language, level)
+			sqlArgs = (listID, title, description)
 			cursor.callproc(sql,sqlArgs)
 			row = cursor.fetchone()
 			dbConnection.commit()
@@ -304,8 +300,10 @@ class Item(Resource):
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateItem'
+			title = request.json['title'];
+			description = request.json['description'];
 			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
+			sqlArgs = (itemId, title, description)
 			cursor.callproc(sql,sqlArgs)
 		except:
 			abort(500)
@@ -340,8 +338,11 @@ class Item(Resource):
 # Identify/create endpoints and endpoint objects
 #
 api = Api(app)
-api.add_resource(lists, '/lists')
-api.add_resource(list, '/lists/<int:listId>')
+api.add_resource(SignIn, '/login')
+api.add_resource(Lists, '/lists')
+api.add_resource(List, '/lists/<int:listId>')
+api.add_resource(Items, '/lists/<int:listId>/Items')
+api.add_resource(Item, '/lists/<int:listId>/Items/<int:itemId>')
 
 #############################################################################
 # xxxxx= last 5 digits of your studentid. If xxxxx > 65535, subtract 30000

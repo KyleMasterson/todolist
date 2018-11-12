@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Create new list
-curl -i -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' http://info3103.cs.unb.ca:24842/lists
+curl -i -H "Content-Type: application/json" -X POST -d '{"title": "Aperture Laboratories", "description": "There is testing to be done"}' http://info3103.cs.unb.ca:24842/lists
 
-# Retrieve all list and get an Id
+# Retrieve all lists and get an Id
 RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists)
-id=$(echo $RESULT | cut -f1 ) # Needs formatting
+id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['lists']['id']")
 
 # Retrieve a list
 curl -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id"
