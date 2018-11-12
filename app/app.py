@@ -98,18 +98,6 @@ class SignIn(Resource):
 
 ####################################################################################
 #
-# Error handlers
-#
-@app.errorhandler(400) # decorators to add to 400 response
-def not_found(error):
-	return make_response(jsonify( { "Status": "Bad request" } ), 400)
-
-@app.errorhandler(404) # decorators to add to 404 response
-def not_found(error):
-	return make_response(jsonify( { "Status": "Resource not found" } ), 404)
-
-####################################################################################
-#
 # Lists routing: GET and POST, individual list access
 #
 class Lists(Resource):
