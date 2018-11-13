@@ -10,7 +10,10 @@ fi;
 
 # Retrieve all lists and get an Id
 RESULT=$(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists)
-id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['lists']['id']")
+id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['lists']['id']");
+
+printf "\nDebug for listClient list retrieval\n\n" > testing.log
+echo $RESULT >> testing.log
 
 # Retrieve a list
 if [[ $(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
