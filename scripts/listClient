@@ -13,7 +13,7 @@ RESULT=$(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.c
 id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['lists']['id']")
 
 # Retrieve a list
-if [[ $(curl -w "%{http_code}" -s -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
+if [[ $(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
 then 
     echo "Successfully to retrieve list"; 
 else
@@ -21,7 +21,7 @@ else
 fi;
 
 # Remove a list
-if [[ $(curl -w "%{http_code}" -s -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
+if [[ $(curl -w "%{http_code}" -s -i -X DELETE -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
 then 
     echo "Successfully removed the list"; 
 else
