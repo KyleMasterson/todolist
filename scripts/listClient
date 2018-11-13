@@ -1,14 +1,29 @@
 #!/bin/bash
 
 # Create new list
-curl -i -H "Content-Type: application/json" -X POST -d '{"title": "Aperture Laboratories", "description": "There is testing to be done"}' http://info3103.cs.unb.ca:24842/lists
+if [[ $(curl -w "%{http_code}" -s -i -H "Content-Type: application/json" -X POST -d '{"title": "Aperture Laboratories", "description": "There is testing to be done"}' -k https://info3103.cs.unb.ca:24842/lists) == "201" ]]; 
+then 
+    echo "Successfully created new list"; 
+else
+    echo "Failed to create new list";
+fi;
 
 # Retrieve all lists and get an Id
-RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists)
+RESULT=$(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists)
 id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['lists']['id']")
 
 # Retrieve a list
-curl -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id"
+if [[ $(curl -w "%{http_code}" -s -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
+then 
+    echo "Successfully to retrieve list"; 
+else
+    echo "Failed to retrieve list";
+fi;
 
 # Remove a list
-curl -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id"
+if [[ $(curl -w "%{http_code}" -s -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id") == "201" ]]; 
+then 
+    echo "Successfully removed the list"; 
+else
+    echo "Failed to remove the list";
+fi;

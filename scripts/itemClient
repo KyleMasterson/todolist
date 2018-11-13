@@ -5,17 +5,37 @@ RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists)
 id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['list']['id']")
 
 # Create new item
-curl -i -H "Content-Type: application/json" -X POST -d '{"title": "Test Item, Please Ignore", "description": "The cake is a lie"}' "http://info3103.cs.unb.ca:24842/lists/$id"
+if [[ $(curl -i -H "Content-Type: application/json" -X POST -d '{"title": "Test Item, Please Ignore", "description": "The cake is a lie"}' "http://info3103.cs.unb.ca:24842/lists/$id") == "201" ]]; 
+then 
+    echo "Successfully created a new item"; 
+else
+    echo "Failed to create a new item";
+fi;
 
 # Retrieve all items and get an Id
 RESULT=$(curl -i -X GET -b cookie-jar http://info3103.cs.unb.ca:24842/lists/$id)
 id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['items']['id']")
 
 # Retrieve an item
-curl -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item"
+if [[ $(curl -i -X GET -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item") == "201" ]]; 
+then 
+    echo "Successfully retrieved the item"; 
+else
+    echo "Failed to retrieve an item";
+fi;
 
 # Update an item
-curl -i -X PUT -d '{"title": "Testing", "description": "For the people who are, still alive"}' -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item"
+if [[ $(curl -i -X PUT -d '{"title": "Testing", "description": "For the people who are, still alive"}' -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item") == "201" ]]; 
+then 
+    echo "Successfully updated the item"; 
+else
+    echo "Failed to update the item";
+fi;
 
 # Remove an item
-curl -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item"
+if [[ $(curl -i -X DELETE -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item") == "201" ]]; 
+then 
+    echo "Successfully removed the item"; 
+else
+    echo "Failed to remove the item";
+fi;
