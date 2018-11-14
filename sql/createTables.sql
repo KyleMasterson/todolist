@@ -1,15 +1,14 @@
 CREATE TABLE IF NOT EXISTS users(
-    id INT AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(username)
 );
 
 CREATE TABLE IF NOT EXISTS lists(
     id INT AUTO_INCREMENT,
-    user_id INT NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    FOREIGN KEY(user_name) REFERENCES users(username)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
     PRIMARY KEY(id)
