@@ -66,9 +66,24 @@ class SignIn(Resource):
 				session['username'] = request_params['username']
 				response = {'Status': 'Success' }
 				responseCode = 201
+				dbConnection = pymysql.connect(settings.DBHOST,
+					settings.DBUSER,
+					settings.DBPASSWD,
+					settings.DBDATABASE,
+					charset='utf8mb4',
+					cursorclass= pymysql.cursors.DictCursor)
+				sql = 'login'
+				self.cursor = dbConnection.cursor()
+				print(session['username'])
+				sqlArgs = (str(session['username']),)
+				self.cursor.callproc(sql,sqlArgs)
+				row = self.cursor.fetchone()
+				dbConnection.commit()
 			except LDAPException:
 				response = {'Status': 'Access denied'}
 				responseCode = 403
+			except:
+				abort(500)
 			finally:
 				ldapConnection.unbind()
 
