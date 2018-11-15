@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Session $(date)" > testing.log
+
 ./signinClient
 
 ./listClient

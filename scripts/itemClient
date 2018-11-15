@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Retrieve all lists and get an Id
-RESULT=$(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists)
-id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['list']['id']")
+RESULT=$(curl -w "STATUS:%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists)
+id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['list']['id']" &> /dev/null)
 
 printf "\nDebug for itemClient list retrieval\n\n" >> testing.log
 echo $RESULT >> testing.log
 
 # Create new item
-if [[ $(curl -w "%{http_code}" -s -i -H "Content-Type: application/json" -X POST -d '{"title": "Test Item, Please Ignore", "description": "The cake is a lie"}' -k "https://info3103.cs.unb.ca:24842/lists/$id") =~ .*201 ]]
+if [[ $(curl -w "STATUS:%{http_code}" -s -i -H "Content-Type: application/json" -X POST -d '{"title": "Test Item, Please Ignore", "description": "The cake is a lie"}' -k "https://info3103.cs.unb.ca:24842/lists/$id") =~ .*STATUS:201 ]]
 then 
     echo "Successfully created a new item"
 else
@@ -16,14 +16,14 @@ else
 fi
 
 # Retrieve all items and get an Id
-RESULT=$(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists/$id)
-id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['items']['id']")
+RESULT=$(curl -w "STATUS:%{http_code}" -s -i -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/lists/$id)
+id=$(echo $RESULT | python -c "import sys, json; print json.load(sys.stdin)['items']['id']" &> /dev/null)
 
 printf "\nDebug for item retrieval\n\n" >> testing.log
 echo $RESULT >> testing.log
 
 # Retrieve an item
-if [[ $(curl -w "%{http_code}" -s -i -X GET -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*201 ]]; 
+if [[ $(curl -w "STATUS:%{http_code}" -s -i -X GET -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*STATUS:200 ]]; 
 then 
     echo "Successfully retrieved the item"; 
 else
@@ -31,7 +31,7 @@ else
 fi;
 
 # Update an item
-if [[ $(curl -w "%{http_code}" -s -i -X PUT -d '{"title": "Testing", "description": "For the people who are, still alive"}' -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*201 ]]; 
+if [[ $(curl -w "STATUS:%{http_code}" -s -i -X PUT -d '{"title": "Testing", "description": "For the people who are, still alive"}' -b cookie-jar "http://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*STATUS:200 ]]; 
 then 
     echo "Successfully updated the item"; 
 else
@@ -39,7 +39,7 @@ else
 fi;
 
 # Remove an item
-if [[ $(curl -w "%{http_code}" -s -i -X DELETE -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*201 ]]; 
+if [[ $(curl -w "STATUS:%{http_code}" -s -i -X DELETE -b cookie-jar -k "https://info3103.cs.unb.ca:24842/list/$id/$item") =~ .*STATUS:200 ]]; 
 then 
     echo "Successfully removed the item"; 
 else

@@ -7,7 +7,7 @@ DROP PROCEDURE IF EXISTS getListById //
 DROP PROCEDURE IF EXISTS deleteList //
 DROP PROCEDURE IF EXISTS createItem //
 DROP PROCEDURE IF EXISTS getItem //
-DROP PROCEDURE IF EXISTS upateItem //
+DROP PROCEDURE IF EXISTS updateItem //
 DROP PROCEDURE IF EXISTS deleteItem //
 
 CREATE PROCEDURE login(IN name VARCHAR(255))
@@ -28,12 +28,13 @@ END//
 CREATE PROCEDURE createList(IN userID VARCHAR(255), inTitle VARCHAR(255), inDescription text)
 BEGIN
  INSERT INTO lists(user_name, title, description) VALUES (userID, inTitle, inDescription);
+ SELECT LAST_INSERT_ID();
 END//
 	
 CREATE PROCEDURE getListById(IN listID INT(11))
 BEGIN
- SELECT * FROM lists
-  WHERE id = listID;
+ SELECT * FROM items
+  WHERE id = list_id;
 END//
 	
 CREATE PROCEDURE deleteList(IN listID INT(11))
@@ -45,6 +46,7 @@ END//
 CREATE PROCEDURE createItem(IN listID INT(11), inTitle VARCHAR(255), description text)
 BEGIN
  INSERT INTO items(list_id, title, description) VALUES (listID, inTitle, inDescription);
+ SELECT LAST_INSERT_ID();
 END//
 
 CREATE PROCEDURE getItem(IN itemID INT(11))
@@ -53,15 +55,22 @@ BEGIN
   WHERE id = itemID;
 END//
 
-CREATE PROCEDURE updateItem(IN itemID INT(11), inTitle VARCHAR(255), inDescription text)
+CREATE PROCEDURE updateItem(IN userID VARCHAR(255), IN itemID INT(11), inTitle VARCHAR(255), inDescription text)
 BEGIN
- UPDATE items title = inTitle, description = inDescription
-  WHERE id = itemID;
+ UPDATE items
+  INNER JOIN lists ON items.list_id=lists.id
+  SET 
+    title = inTitle, 
+    description = inDescription
+  WHERE id = items.itemID
+  AND userID = list_id.username;
 END//
 	
 CREATE PROCEDURE deleteItem(IN itemID INT(11))
 BEGIN
- DELETE FROM items
-  WHERE id = itemID;
+ DELETE items.* FROM items
+  INNER JOIN lists ON items.list_id=lists.id
+  WHERE id = items.itemID
+  AND userID = list_id.username;
 END//
 DELIMITER ;

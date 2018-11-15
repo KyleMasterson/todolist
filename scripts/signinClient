@@ -5,7 +5,7 @@ read -p "username: " username
 read -s -p "password: " password
 
 # substitute into the curl command
-if [[ $(curl -w "%{http_code}" -s -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' -b cookie-jar -c cookie-jar -k https://info3103.cs.unb.ca:24842/signin) =~ .*201 ]]; 
+if [[ $(curl -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' -b cookie-jar -c cookie-jar -k https://info3103.cs.unb.ca:24842/signin) =~ .*STATUS:201 ]]; 
 then 
     echo "User successfully created"; 
 else
@@ -13,7 +13,7 @@ else
 fi;
 
 # Login
-if [[ "$(curl -w "%{http_code}" -s -i -X GET -c cookie-jar -b cookie-jar -k https://info3103.cs.unb.ca:24842/signin)" =~ .*201 ]]; 
+if [[ "$(curl -w "STATUS:%{http_code}" -s -i -X GET -c cookie-jar -b cookie-jar -k https://info3103.cs.unb.ca:24842/signin)" =~ .*STATUS:200 ]]; 
 then 
     echo "User successfully retrieved"; 
 else
@@ -22,7 +22,7 @@ fi;
 
 
 # Logout
-if [[ "$(curl -w "%{http_code}" -s -i -X DELETE -c cookie-jar -b cookie-jar -k https://info3103.cs.unb.ca:24842/signin)" =~ .*201 ]]; 
+if [[ "$(curl -w "STATUS:%{http_code}" -s -i -X DELETE -c cookie-jar -b cookie-jar -k https://info3103.cs.unb.ca:24842/signin)" =~ .*STATUS:200 ]]; 
 then 
     echo "User successfully logged out"; 
 else
@@ -30,7 +30,7 @@ else
 fi;
 
 # Login Again
-if [[ $(curl -w "%{http_code}" -s -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' -b cookie-jar -c cookie-jar -k https://info3103.cs.unb.ca:24842/signin) =~ .*201 ]]; 
+if [[ $(curl -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X POST -d '{"username": "'$username'", "password": "'$password'"}' -b cookie-jar -c cookie-jar -k https://info3103.cs.unb.ca:24842/signin) =~ .*STATUS:201 ]]; 
 then 
     echo "User successfully created"; 
 else

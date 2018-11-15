@@ -74,7 +74,6 @@ class SignIn(Resource):
 					cursorclass= pymysql.cursors.DictCursor)
 				sql = 'login'
 				self.cursor = dbConnection.cursor()
-				print(session['username'])
 				sqlArgs = (str(session['username']),)
 				self.cursor.callproc(sql,sqlArgs)
 				row = self.cursor.fetchone()
@@ -124,6 +123,7 @@ class Lists(Resource):
 			abort(400)
 		title = request.json['title'];
 		description = request.json['description'];
+		row = None
 		try:
 			dbConnection = pymysql.connect(settings.DBHOST,
 				settings.DBUSER,
@@ -145,7 +145,7 @@ class Lists(Resource):
 			if self.dbConnection is not None:
 				self.dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( { "uri" : uri } ), 201)
 
@@ -160,7 +160,7 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getLists'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (session['username'])
+			sqlArgs = (session['username'],)
 			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:
@@ -192,7 +192,7 @@ class List(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getListById'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (listId)
+			sqlArgs = (listId,)
 			self.cursor.callproc(sql,sqlArgs)
 			row = self.cursor.fetchone()
 			if row is None:
@@ -207,7 +207,6 @@ class List(Resource):
 		return make_response(jsonify({"list": row}), 200)
 
 	def delete(self, listId):
-		print("List Id to delete: " + listId)
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -218,7 +217,7 @@ class List(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteList'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (listId)
+			sqlArgs = (listId,)
 			self.cursor.callproc(sql,sqlArgs)
 		except:
 			abort(500)
@@ -227,7 +226,7 @@ class List(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return
+		return make_response(jsonify({'Success': Success, 'ListId': listId}), 200)
 
 class Items(Resource):
 
@@ -284,7 +283,7 @@ class Items(Resource):
 			if self.dbConnection is not None:
 				self.dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( { "uri" : uri } ), 201)
 
@@ -343,7 +342,6 @@ class Item(Resource):
 		return make_response(jsonify({"Item": row}), 200)
 
 	def delete(self, itemId):
-		print("Item Id to delete: " + itemId)
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -363,7 +361,7 @@ class Item(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return
+		return make_response(jsonify({'Success': Success, 'ItemId': itemId}), 200)
 
 ####################################################################################
 #
