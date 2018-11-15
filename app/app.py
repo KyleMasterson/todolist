@@ -217,8 +217,9 @@ class List(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteList'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (listId,)
+			sqlArgs = (session['username'], listId)
 			self.cursor.callproc(sql,sqlArgs)
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
@@ -226,7 +227,7 @@ class List(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return make_response(jsonify({'Success': Success, 'ListId': listId}), 200)
+		return make_response(jsonify({'Status': 'Removed', 'ListId': listId}), 200)
 
 class Items(Resource):
 
@@ -255,13 +256,11 @@ class Items(Resource):
 				self.dbConnection.close()
 		return make_response(jsonify({'items': rows}), 200)
 
-	def post(self, listID):
-
+	def post(self, listId):
 		if not request.json:
 			abort(400)
 		title = request.json['title'];
 		description = request.json['description'];
-
 		try:
 			dbConnection = pymysql.connect(settings.DBHOST,
 				settings.DBUSER,
@@ -271,7 +270,7 @@ class Items(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'createItem'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (listID, title, description)
+			sqlArgs = (listId, title, description)
 			self.cursor.callproc(sql,sqlArgs)
 			row = self.cursor.fetchone()
 			dbConnection.commit()
@@ -284,7 +283,7 @@ class Items(Resource):
 				self.dbConnection.close()
 
 		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
-		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
+		uri = uri+str(request.url_rule).replace("<int:listId>", str(row['list_id']))+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( { "uri" : uri } ), 201)
 
 class Item(Resource):
@@ -292,7 +291,7 @@ class Item(Resource):
 	cursor = None
 	dbConnection = None
 
-	def get(self, itemId):
+	def get(self, listId, itemId):
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -303,7 +302,7 @@ class Item(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getItemByID'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
+			sqlArgs = (itemId,)
 			self.cursor.callproc(sql,sqlArgs)
 			row = self.cursor.fetchone()
 			if row is None:
@@ -317,7 +316,11 @@ class Item(Resource):
 				self.dbConnection.close()
 		return make_response(jsonify({"item": row}), 200)
 
-	def put(self, itemId):
+	def put(self, listId, itemId):
+		if not request.json:
+			abort(400)
+		title = request.json['title'];
+		description = request.json['description'];
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -327,11 +330,13 @@ class Item(Resource):
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateItem'
-			title = request.json['title'];
-			description = request.json['description'];
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (itemId, title, description)
+			sqlArgs = (session['username'], itemId, title, description)
 			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
+			if row is None:
+				abort(404)
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
@@ -341,7 +346,7 @@ class Item(Resource):
 				self.dbConnection.close()
 		return make_response(jsonify({"Item": row}), 200)
 
-	def delete(self, itemId):
+	def delete(self, listId, itemId):
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -352,8 +357,9 @@ class Item(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteItem'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
+			sqlArgs = (session['username'], itemId)
 			self.cursor.callproc(sql,sqlArgs)
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
@@ -361,7 +367,7 @@ class Item(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return make_response(jsonify({'Success': Success, 'ItemId': itemId}), 200)
+		return make_response(jsonify({'Status': 'Removed', 'ItemId': itemId}), 200)
 
 ####################################################################################
 #
@@ -371,8 +377,8 @@ api = Api(app)
 api.add_resource(SignIn, '/signin')
 api.add_resource(Lists, '/lists')
 api.add_resource(List, '/lists/<int:listId>')
-api.add_resource(Items, '/lists/<int:listId>/Items')
-api.add_resource(Item, '/lists/<int:listId>/Items/<int:itemId>')
+api.add_resource(Items, '/lists/<int:listId>/items')
+api.add_resource(Item, '/lists/<int:listId>/items/<int:itemId>')
 
 #############################################################################
 # xxxxx= last 5 digits of your studentid. If xxxxx > 65535, subtract 30000
