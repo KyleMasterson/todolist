@@ -50,7 +50,7 @@ else
     echo $json >> testing.log;
 fi;
 
-call curl -k -c cookie-jar -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X PUT -d '{"nickname": "Kyle", "description": "Essentially a test user"}' -b cookie-jar https://info3103.cs.unb.ca:24842/users/kmasters
+call curl -k -c cookie-jar -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X PUT -d '{"nickname": "Kyle"}' -b cookie-jar https://info3103.cs.unb.ca:24842/users/kmasters
 
 # Update a user
 if [[ $code == "200" ]]; 

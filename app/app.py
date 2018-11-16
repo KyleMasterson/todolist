@@ -114,6 +114,9 @@ class SignIn(Resource):
 class Users(Resource):
 	"""Handles user set operations"""
 
+	cursor = None
+	dbConnection = None
+
 	def get(self):
 		"""Retrieves a list of users based on a query, default returns all users"""
 		try:
@@ -124,9 +127,14 @@ class Users(Resource):
 				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getUsers'
+			sql = 'getUser'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (request.args.get('user', ''), request.args.get('name', ''))
+			search = ''
+			if 'user' in request.args:
+				search = request.args.get('user', '')
+			else:
+				search = request.args.get('name', '')
+			sqlArgs = (search,)
 			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:
@@ -139,7 +147,10 @@ class Users(Resource):
 		return make_response(jsonify({'lists': rows}), 200)
 
 class User(Resource):
-	"""Handles indiviual users"""
+	"""Handles individual users"""
+
+	cursor = None
+	dbConnection = None
 
 	def put(self, userId):
 		"""Allows the currently logged in user to edit their information"""
@@ -148,7 +159,6 @@ class User(Resource):
 		if not request.json:
 			abort(400)
 		nickname = request.json.get('nickname', '')
-		description = request.json.get('description', '')
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -157,9 +167,9 @@ class User(Resource):
 				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'updateUser'
+			sql = 'updateName'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (session['username'], nickname, description)
+			sqlArgs = (session['username'], nickname)
 			self.cursor.callproc(sql,sqlArgs)
 			row = self.cursor.fetchone()
 			if row is None:
@@ -174,34 +184,9 @@ class User(Resource):
 				self.dbConnection.close()
 		return make_response(jsonify({"User": row}), 200)
 
-	def get(self, userId):
-		"""Retrieves information about a user"""
-		try:
-			dbConnection = pymysql.connect(
-				settings.DBHOST,
-				settings.DBUSER,
-				settings.DBPASSWD,
-				settings.DBDATABASE,
-				charset='utf8mb4',
-				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getUserById'
-			self.cursor = dbConnection.cursor()
-			sqlArgs = (userId,)
-			self.cursor.callproc(sql,sqlArgs)
-			row = self.cursor.fetchone()
-			if row is None:
-				abort(404)
-		except:
-			abort(500)
-		finally:
-			if self.cursor is not None:
-				self.cursor.close()
-			if self.dbConnection is not None:
-				self.dbConnection.close()
-		return make_response(jsonify({"user": row}), 200)
-
 	def delete(self, userId):
 		"""Allows a user to delete their account"""
+		
 		if userId != session['username']:
 			abort(401)
 		try:
@@ -281,7 +266,7 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getLists'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (request.args.get('user', ''), request.args.get('list', ''))
+			sqlArgs = (session['username'],)
 			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:
