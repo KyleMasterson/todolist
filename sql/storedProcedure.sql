@@ -2,8 +2,7 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS login //
 DROP PROCEDURE IF EXISTS getLists //
-DROP PROCEDURE IF EXISTS getUserByUsername//
-DROP PROCEDURE IF EXISTS getUserByScreenname//
+DROP PROCEDURE IF EXISTS getUser//
 DROP PROCEDURE IF EXISTS updateName //
 DROP PROCEDURE IF EXISTS createList //
 DROP PROCEDURE IF EXISTS getListById //
@@ -28,16 +27,15 @@ BEGIN
   where user_name = userID;
 END//
 
-CREATE PROCEDURE getUserByUsername(IN name VARCHAR(255))
+CREATE PROCEDURE getUser(IN name VARCHAR(255))
 BEGIN
- SELECT * FROM users
-  WHERE username = name;
-END//
-
-CREATE PROCEDURE getUserByScreenname(IN name VARCHAR(255))
-BEGIN
- SELECT * FROM users
-  WHERE screen_name = name;
+IF EXISTS (SELECT * FROM users WHERE screen_name = name OR username = name) THEN
+ SELECT * FROM users 
+  WHERE screen_name = name
+    OR username = name;
+ELSE
+ SELECT * FROM users;
+END IF;
 END//
 
 CREATE PROCEDURE updateName(IN user VARCHAR(255), name VARCHAR(255))
