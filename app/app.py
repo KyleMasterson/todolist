@@ -103,13 +103,13 @@ class SignIn(Resource):
 
 	def delete(self):
 		"""Removes the current user's session"""
-			Success = False
-			username = 'Not Found'
-			if 'username' in session:
-				Success = True
-				username = session['username']
-				session.clear()
-			return make_response(jsonify({'Success': Success, 'Username': username}), 200)
+		Success = False
+		username = 'Not Found'
+		if 'username' in session:
+			Success = True
+			username = session['username']
+			session.clear()
+		return make_response(jsonify({'Success': Success, 'Username': username}), 200)
 
 class Users(Resource):
 	"""Handles user set operations"""
