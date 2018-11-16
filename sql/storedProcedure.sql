@@ -2,11 +2,14 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS login //
 DROP PROCEDURE IF EXISTS getLists //
+DROP PROCEDURE IF EXISTS getUserByUsername//
+DROP PROCEDURE IF EXISTS getUserByScreenname//
+DROP PROCEDURE IF EXISTS updateName //
 DROP PROCEDURE IF EXISTS createList //
 DROP PROCEDURE IF EXISTS getListById //
 DROP PROCEDURE IF EXISTS deleteList //
 DROP PROCEDURE IF EXISTS createItem //
-DROP PROCEDURE IF EXISTS getItem //
+DROP PROCEDURE IF EXISTS getItemByID //
 DROP PROCEDURE IF EXISTS updateItem //
 DROP PROCEDURE IF EXISTS deleteItem //
 
@@ -23,6 +26,25 @@ CREATE PROCEDURE getLists(IN userID VARCHAR(255))
 BEGIN
  SELECT * FROM lists
   where user_name = userID;
+END//
+
+CREATE PROCEDURE getUserByUsername(IN name VARCHAR(255))
+BEGIN
+ SELECT * FROM users
+  WHERE username = name;
+END//
+
+CREATE PROCEDURE getUserByScreenname(IN name VARCHAR(255))
+BEGIN
+ SELECT * FROM users
+  WHERE screen_name = name;
+END//
+
+CREATE PROCEDURE updateName(IN user VARCHAR(255), name VARCHAR(255))
+BEGIN
+ UPDATE users
+  SET screen_name = name
+   WHERE username = user;
 END//
 	
 CREATE PROCEDURE createList(IN userID VARCHAR(255), inTitle VARCHAR(255), inDescription text)
