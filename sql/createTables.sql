@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS users(
     username VARCHAR(255) NOT NULL,
+    screen_name VARCHAR(255),
     PRIMARY KEY(username)
 );
 
