@@ -103,13 +103,13 @@ class SignIn(Resource):
 
 	def delete(self):
 		"""Removes the current user's session"""
-			Success = False
-			username = 'Not Found'
-			if 'username' in session:
-				Success = True
-				username = session['username']
-				session.clear()
-			return make_response(jsonify({'Success': Success, 'Username': username}), 200)
+		Success = False
+		username = 'Not Found'
+		if 'username' in session:
+			Success = True
+			username = session['username']
+			session.clear()
+		return make_response(jsonify({'Success': Success, 'Username': username}), 200)
 
 class Users(Resource):
 	"""Handles user set operations"""
@@ -172,7 +172,7 @@ class User(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return make_response(jsonify({"Item": row}), 200)
+		return make_response(jsonify({"User": row}), 200)
 
 	def get(self, userId):
 		"""Retrieves information about a user"""
