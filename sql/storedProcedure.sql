@@ -3,6 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS login //
 DROP PROCEDURE IF EXISTS getLists //
 DROP PROCEDURE IF EXISTS getUser//
+DROP PROCEDURE IF EXISTS deleteUser//
 DROP PROCEDURE IF EXISTS updateName //
 DROP PROCEDURE IF EXISTS createList //
 DROP PROCEDURE IF EXISTS getListById //
@@ -38,11 +39,19 @@ ELSE
 END IF;
 END//
 
+CREATE PROCEDURE deleteUser(IN name VARCHAR(255))
+BEGIN
+DELETE FROM users
+ WHERE user = name;
+END//
+
 CREATE PROCEDURE updateName(IN user VARCHAR(255), name VARCHAR(255))
 BEGIN
  UPDATE users
   SET screen_name = name
    WHERE username = user;
+ SELECT * FROM users
+  WHERE screen_name = name;
 END//
 	
 CREATE PROCEDURE createList(IN userID VARCHAR(255), inTitle VARCHAR(255), inDescription text)
