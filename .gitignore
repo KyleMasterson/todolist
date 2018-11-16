@@ -1,3 +1,7 @@
 *.pem
-__pycache__
 flask_session
+app/__pycache__
+cookie-jar
+*.log
+scripts/cookie-jar
+*.pyc

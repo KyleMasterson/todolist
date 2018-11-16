@@ -4,8 +4,8 @@ from flask_session import Session
 from ldap3 import Server, Connection, ALL
 from ldap3.core.exceptions import *
 import ssl #include ssl libraries
-from flask import Flask, jsonify, abort, request, make_response
-from flask_restful import Resource, Api
+from flask import Flask, jsonify, abort, request, make_response, session
+from flask_restful import reqparse, Resource, Api
 import pymysql.cursors
 import json
 
@@ -14,10 +14,9 @@ import cgi
 import sys
 import settings # Our server and db settings, stored in settings.py
 
+app = Flask(__name__)
 api = Api(app)
 cgitb.enable()
-
-app = Flask(__name__)
 
 # Set Server-side session config: Save sessions in the local app directory.
 app.secret_key = settings.SECRET_KEY
@@ -40,7 +39,6 @@ def not_found(error):
 
 class SignIn(Resource):
 	def post(self):
-
 		if not request.json:
 			abort(400)
 
@@ -68,9 +66,23 @@ class SignIn(Resource):
 				session['username'] = request_params['username']
 				response = {'Status': 'Success' }
 				responseCode = 201
+				dbConnection = pymysql.connect(settings.DBHOST,
+					settings.DBUSER,
+					settings.DBPASSWD,
+					settings.DBDATABASE,
+					charset='utf8mb4',
+					cursorclass= pymysql.cursors.DictCursor)
+				sql = 'login'
+				self.cursor = dbConnection.cursor()
+				sqlArgs = (str(session['username']),)
+				self.cursor.callproc(sql,sqlArgs)
+				row = self.cursor.fetchone()
+				dbConnection.commit()
 			except LDAPException:
 				response = {'Status': 'Access denied'}
 				responseCode = 403
+			except:
+				abort(500)
 			finally:
 				ldapConnection.unbind()
 
@@ -95,253 +107,278 @@ class SignIn(Resource):
 				Success = True
 				username = session['username']
 				session.clear()
-			return make_response(jsonify({'Success': Success, 'Username': username}), 200) # turn set into json and return it
-
-api = Api(app)
-api.add_resource(SignIn, '/signin')
-
-####################################################################################
-#
-# Error handlers
-#
-@app.errorhandler(400) # decorators to add to 400 response
-def not_found(error):
-	return make_response(jsonify( { "Status": "Bad request" } ), 400)
-
-@app.errorhandler(404) # decorators to add to 404 response
-def not_found(error):
-	return make_response(jsonify( { "Status": "Resource not found" } ), 404)
+			return make_response(jsonify({'Success': Success, 'Username': username}), 200)
 
 ####################################################################################
 #
 # Lists routing: GET and POST, individual list access
 #
 class Lists(Resource):
-	def get(self):
-		try:
-			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
-				charset='utf8mb4',
-				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getLists'
-			cursor = dbConnection.cursor()
-			cursor.callproc(sql)
-			rows = cursor.fetchall()
-		except:
-			abort(500)
-		finally:
-			cursor.close()
-			dbConnection.close()
-		return make_response(jsonify({'lists': rows}), 200)
+
+	cursor = None
+	dbConnection = None
 
 	def post(self):
-		if not request.json or not 'Name' in request.json:
+		if not request.json:
 			abort(400)
-		name = request.json['Name'];
-		province = request.json['Province'];
-		language = request.json['Language'];
-		level = request.json['Level'];
-
+		title = request.json['title'];
+		description = request.json['description'];
+		row = None
 		try:
-			dbConnection = pymysql.connect(settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+			dbConnection = pymysql.connect(settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'createList'
-			cursor = dbConnection.cursor()
-			sqlArgs = (name, province, language, level)
-			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchone()
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (session['username'], title, description)
+			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
 			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
 		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( { "uri" : uri } ), 201)
+
+	def get(self):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'getLists'
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (session['username'],)
+			self.cursor.callproc(sql, sqlArgs)
+			rows = self.cursor.fetchall()
+		except:
+			abort(500)
+		finally:
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
+		return make_response(jsonify({'lists': rows}), 200)
 
 ####################################################################################
 #
 # Single list handling
 #
 class List(Resource):
+
+	cursor = None
+	dbConnection = None
+
 	def get(self, listId):
 		try:
 			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getListById'
-			cursor = dbConnection.cursor()
-			sqlArgs = (listId)
-			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchone()
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (listId,)
+			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
 			if row is None:
 				abort(404)
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
 		return make_response(jsonify({"list": row}), 200)
 
 	def delete(self, listId):
-		print("List Id to delete: " + listId)
 		try:
 			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteList'
-			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
-			cursor.callproc(sql,sqlArgs)
-		except:
-			abort(500)
-		finally:
-			cursor.close()
-			dbConnection.close()
-		return
-
-class Items(Resource):
-	def get(self):
-		try:
-			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
-				charset='utf8mb4',
-				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'getItems'
-			cursor = dbConnection.cursor()
-			cursor.callproc(sql)
-			rows = cursor.fetchall()
-		except:
-			abort(500)
-		finally:
-			cursor.close()
-			dbConnection.close()
-		return make_response(jsonify({'items': rows}), 200)
-
-	def post(self):
-
-		if not request.json or not 'Name' in request.json:
-			abort(400)
-		name = request.json['Name'];
-		province = request.json['Province'];
-		language = request.json['Language'];
-		level = request.json['Level'];
-
-		try:
-			dbConnection = pymysql.connect(settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
-				charset='utf8mb4',
-				cursorclass= pymysql.cursors.DictCursor)
-			sql = 'createItem'
-			cursor = dbConnection.cursor()
-			sqlArgs = (name, province, language, level)
-			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchone()
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (session['username'], listId)
+			self.cursor.callproc(sql,sqlArgs)
 			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
+		return make_response(jsonify({'Status': 'Removed', 'ListId': listId}), 200)
 
-		uri = 'http://'+settings.APP_HOST+':'+str(settings.APP_PORT)
-		uri = uri+str(request.url_rule)+'/'+str(row['LAST_INSERT_ID()'])
+class Items(Resource):
+
+	cursor = None
+	dbConnection = None
+
+	def get(self):
+		try:
+			dbConnection = pymysql.connect(
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'getItems'
+			self.cursor = dbConnection.cursor()
+			self.cursor.callproc(sql)
+			rows = self.cursor.fetchall()
+		except:
+			abort(500)
+		finally:
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
+		return make_response(jsonify({'items': rows}), 200)
+
+	def post(self, listId):
+		if not request.json:
+			abort(400)
+		title = request.json['title'];
+		description = request.json['description'];
+		try:
+			dbConnection = pymysql.connect(settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
+				charset='utf8mb4',
+				cursorclass= pymysql.cursors.DictCursor)
+			sql = 'createItem'
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (listId, title, description)
+			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
+			dbConnection.commit()
+		except:
+			abort(500)
+		finally:
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
+
+		uri = 'https://'+settings.APP_HOST+':'+str(settings.APP_PORT)
+		uri = uri+str(request.url_rule).replace("<int:listId>", str(row['list_id']))+'/'+str(row['LAST_INSERT_ID()'])
 		return make_response(jsonify( { "uri" : uri } ), 201)
 
 class Item(Resource):
-	def get(self, itemId):
+
+	cursor = None
+	dbConnection = None
+
+	def get(self, listId, itemId):
 		try:
 			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getItemByID'
-			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
-			cursor.callproc(sql,sqlArgs)
-			row = cursor.fetchone()
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (itemId,)
+			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
 			if row is None:
 				abort(404)
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
 		return make_response(jsonify({"item": row}), 200)
 
-	def put(self, itemId):
+	def put(self, listId, itemId):
+		if not request.json:
+			abort(400)
+		title = request.json['title'];
+		description = request.json['description'];
 		try:
 			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateItem'
-			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
-			cursor.callproc(sql,sqlArgs)
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (session['username'], itemId, title, description)
+			self.cursor.callproc(sql,sqlArgs)
+			row = self.cursor.fetchone()
+			if row is None:
+				abort(404)
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
 		return make_response(jsonify({"Item": row}), 200)
 
-	def delete(self, itemId):
-		print("Item Id to delete: " + itemId)
+	def delete(self, listId, itemId):
 		try:
 			dbConnection = pymysql.connect(
-				settings.DB_HOST,
-				settings.DB_USER,
-				settings.DB_PASSWD,
-				settings.DB_DATABASE,
+				settings.DBHOST,
+				settings.DBUSER,
+				settings.DBPASSWD,
+				settings.DBDATABASE,
 				charset='utf8mb4',
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'deleteItem'
-			cursor = dbConnection.cursor()
-			sqlArgs = (itemId)
-			cursor.callproc(sql,sqlArgs)
+			self.cursor = dbConnection.cursor()
+			sqlArgs = (session['username'], itemId)
+			self.cursor.callproc(sql,sqlArgs)
+			dbConnection.commit()
 		except:
 			abort(500)
 		finally:
-			cursor.close()
-			dbConnection.close()
-		return
+			if self.cursor is not None:
+				self.cursor.close()
+			if self.dbConnection is not None:
+				self.dbConnection.close()
+		return make_response(jsonify({'Status': 'Removed', 'ItemId': itemId}), 200)
 
 ####################################################################################
 #
 # Identify/create endpoints and endpoint objects
 #
 api = Api(app)
-api.add_resource(lists, '/lists')
-api.add_resource(list, '/lists/<int:listId>')
+api.add_resource(SignIn, '/signin')
+api.add_resource(Lists, '/lists')
+api.add_resource(List, '/lists/<int:listId>')
+api.add_resource(Items, '/lists/<int:listId>/items')
+api.add_resource(Item, '/lists/<int:listId>/items/<int:itemId>')
 
 #############################################################################
 # xxxxx= last 5 digits of your studentid. If xxxxx > 65535, subtract 30000
