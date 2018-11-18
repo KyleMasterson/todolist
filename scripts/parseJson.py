@@ -12,4 +12,4 @@ import sys, json
 try:
     print(json.load(sys.stdin)[sys.argv[1]])
 except:
-    print("Invalid Json")
+    print("Invalid " + sys.argv[1])

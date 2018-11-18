@@ -266,7 +266,7 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getLists'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (session['username'],)
+			sqlArgs = (session.get('username', ''),)
 			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:

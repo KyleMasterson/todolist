@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Clear log
-echo "Logs for session $(date)" > testing.log
+echo "Logs for session $(date)" > requests.log
+echo "Logs for session $(date)" > responses.log
 
 # Track successful tests
 count=0
@@ -13,6 +14,7 @@ prev=0
 # Define some colors, pretty!
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Allow parseJson script to run
@@ -35,7 +37,7 @@ function call() {
 # Validation json responses against expected json
 function verifyJSON() {
     file="$2.json"
-    expected=$(<$file)
+    expected=$(<../data/$file)
     expected=$(printf '%s' "$expected" | sed 's/[0-9]//g')
     expected=$(echo "${expected/placeholder/$username}")
     actual=$(printf '%s' "$1" | sed 's/[0-9]//g')
@@ -44,11 +46,11 @@ function verifyJSON() {
         validJson=$((validJson+1))
     else
         writeError "JSON object failed to validate: $2"
-        echo "JSON object failed to validate: $2" >> testing.log
-        echo "Actual: " >> testing.log
-        echo $actual >> testing.log
-        echo "Expected: " >> testing.log
-        echo $expected >> testing.log
+        echo "JSON object failed to validate: $2" >> responses.log
+        echo "Actual: " >> responses.log
+        echo $actual >> responses.log
+        echo "Expected: " >> responses.log
+        echo $expected >> responses.log
     fi;
 }
 
@@ -66,7 +68,7 @@ function statusUpdate() {
 
         echo "$curCount out of $curTotal tests passed"
     fi;
-    echo "==[$1]=="
+    echo "===[$1]==="
     prevTotal=$total
     prevCount=$count
 }
@@ -88,6 +90,8 @@ then
     verifyJSON "$json" "postSignin"
 else
     writeError "Failed to create user";
+    echo "Failed to create user: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -100,6 +104,8 @@ then
     verifyJSON "$json" "getSignin"
 else
     writeError "Failed to login user";
+    echo "Failed to login user: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -115,8 +121,8 @@ then
     verifyJSON "$json" "getUsers"
 else
     writeError "Failed to retrieve users: $code";
-    echo "Failed to retrieve users: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to retrieve users: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -129,8 +135,8 @@ then
     verifyJSON "$json" "putUser"
 else
     writeError "Failed to update the user: $code";
-    echo "Failed to update the user: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to update the user: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -146,8 +152,8 @@ then
     verifyJSON "$json" "postLists" 
 else
     writeError "Failed to create new list: $code";
-    echo "Failed to create new list: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to create new list: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -163,8 +169,8 @@ then
     verifyJSON "$json" "getLists"
 else
     writeError "Failed to retrieve all lists: $code";
-    echo "Failed to retrieve the list: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to retrieve the list: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -177,9 +183,9 @@ then
     verifyJSON "$json" "getList"
 else
     writeError "Failed to retrieve list: $code";
-    echo "Failed to retrieve list: $code" >> testing.log;
-    echo $json >> testing.log;
-    echo "At uri: $uri" >> testing.log
+    echo "Failed to retrieve list: $code" >> requests.log;
+    echo $json >> requests.log;
+    echo "At uri: $uri" >> requests.log
 fi;
 total=$((total+1))
 
@@ -194,9 +200,9 @@ then
     verifyJSON "$json" "postItems"
 else
     writeError "Failed to create a new item: $code";
-    echo "Failed to create a new item: $code" >> testing.log;
-    echo $json >> testing.log;
-    echo "At uri: $uri/items" >> testing.log
+    echo "Failed to create a new item: $code" >> requests.log;
+    echo $json >> requests.log;
+    echo "At uri: $uri/items" >> requests.log
 fi;
 total=$((total+1))
 
@@ -212,9 +218,9 @@ then
     verifyJSON "$json" "getItem"
 else
     writeError "Failed to retrieve an item: $code";
-    echo "Failed to retrieve an item: $code" >> testing.log;
-    echo $json >> testing.log;
-    echo "At uri: $uri" >> testing.log
+    echo "Failed to retrieve an item: $code" >> requests.log;
+    echo $json >> requests.log;
+    echo "At uri: $uri" >> requests.log
 fi;
 total=$((total+1))
 
@@ -227,9 +233,9 @@ then
     verifyJSON "$json" "putItem"
 else
     writeError "Failed to update the  item: $code";
-    echo "Failed to update the  item: $code" >> testing.log;
-    echo $json >> testing.log;
-    echo "At uri: $uri" >> testing.log
+    echo "Failed to update the  item: $code" >> requests.log;
+    echo $json >> requests.log;
+    echo "At uri: $uri" >> requests.log
 fi;
 total=$((total+1))
 
@@ -244,9 +250,9 @@ then
     verifyJSON "$json" "deleteItem"
 else
     writeError "Failed to remove the  item: $code";
-    echo "Failed to remove the  item: $code" >> testing.log;
-    echo $json >> testing.log;
-    echo "At uri: $uri" >> testing.log
+    echo "Failed to remove the  item: $code" >> requests.log;
+    echo $json >> requests.log;
+    echo "At uri: $uri" >> requests.log
 fi;
 total=$((total+1))
 
@@ -261,8 +267,8 @@ then
     verifyJSON "$json" "deleteList"
 else
     writeError "Failed to remove the list: $code";
-    echo "Failed to remove the list: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to remove the list: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -287,6 +293,8 @@ then
     verifyJSON "$json" "postSignin"
 else
     writeError "Failed to create user";
+    echo "Failed to create user: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -299,8 +307,8 @@ then
     verifyJSON "$json" "deleteUser"
 else
     writeError "Failed to remove the user: $code";
-    echo "Failed to remove the user: $code" >> testing.log;
-    echo $json >> testing.log;
+    echo "Failed to remove the user: $code" >> requests.log;
+    echo $json >> requests.log;
 fi;
 total=$((total+1))
 
@@ -309,17 +317,21 @@ statusUpdate "Results"
 if [ $total -eq $count ]
 then
     printf "[${GREEN}PASS${NC}] "
+    echo "$count out of $total tests received successful response codes"
 else
     printf "[${RED}FAIL${NC}] "
+    echo "$count out of $total tests received successful response codes"
+    printf "[${BLUE}LOG${NC}] $(pwd)/requests.log\n"
 fi;
 
-echo "$count out of $total tests received successful response codes"
+
 
 if [ $validJson -eq $total ]
 then
     printf "[${GREEN}PASS${NC}] "
+    echo "$validJson tests received expected json responses"
 else
     printf "[${RED}FAIL${NC}] "
+    echo "$validJson tests received expected json responses"
+    printf "[${BLUE}LOG${NC}] $(pwd)/responses.log\n"
 fi;
-
-echo "$validJson tests received expected json responses"
