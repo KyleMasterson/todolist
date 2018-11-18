@@ -37,6 +37,7 @@ function verifyJSON() {
     file="$2.json"
     expected=$(<$file)
     expected=$(printf '%s' "$expected" | sed 's/[0-9]//g')
+    expected=$(echo "${expected/placeholder/$username}")
     actual=$(printf '%s' "$1" | sed 's/[0-9]//g')
     if [[ "$actual" == *"$expected"* ]]
     then
@@ -106,7 +107,7 @@ total=$((total+1))
 statusUpdate "Users"
 
 # Retrieve users
-call curl -c cookie-jar -w "STATUS:%{http_code}" -s -X GET -b cookie-jar -k https://info3103.cs.unb.ca:24842/users?user=kmasters
+call curl -c cookie-jar -w "STATUS:%{http_code}" -s -X GET -b cookie-jar -k "https://info3103.cs.unb.ca:24842/users?user=$username"
 
 if [[ $code == "200" ]]; 
 then
@@ -120,7 +121,7 @@ fi;
 total=$((total+1))
 
 # Update a user
-call curl -k -c cookie-jar -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X PUT -d '{"nickname": "Kyle"}' -b cookie-jar https://info3103.cs.unb.ca:24842/users/kmasters
+call curl -k -c cookie-jar -w "STATUS:%{http_code}" -s -H "Content-Type: application/json" -X PUT -d '{"screen_name": "Test"}' -b cookie-jar "https://info3103.cs.unb.ca:24842/users/$username"
 
 if [[ $code == "200" ]]; 
 then
@@ -290,7 +291,7 @@ fi;
 total=$((total+1))
 
 # Delete user
-call curl -c cookie-jar -w "STATUS:%{http_code}" -s -X DELETE -b cookie-jar -k https://info3103.cs.unb.ca:24842/users/kmasters
+call curl -c cookie-jar -w "STATUS:%{http_code}" -s -X DELETE -b cookie-jar -k "https://info3103.cs.unb.ca:24842/users/$username"
 
 if [[ $code == "200" ]]; 
 then 
