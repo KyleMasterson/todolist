@@ -27,11 +27,13 @@ Session(app)
 @app.errorhandler(400)
 def not_found(error):
 	"""Handles invalid requests"""
+
 	return make_response(jsonify( { 'Status': 'Bad request' } ), 400)
 
 @app.errorhandler(404)
 def not_found(error):
 	"""Handles valid requests that match no data"""
+
 	return make_response(jsonify( { 'Status': 'Resource not found' } ), 404)
 
 class SignIn(Resource):
@@ -39,6 +41,7 @@ class SignIn(Resource):
 
 	def post(self):
 		"""Allows users to login, or register if they do not already exist"""
+		
 		if not request.json:
 			abort(400)
 
@@ -90,6 +93,7 @@ class SignIn(Resource):
 
 	def get(self):
 		"""Valids that the user is logged in"""
+
 		Success = False
 		if 'username' in session:
 			username = session['username']
@@ -103,6 +107,7 @@ class SignIn(Resource):
 
 	def delete(self):
 		"""Removes the current user's session"""
+
 		Success = False
 		username = 'Not Found'
 		if 'username' in session:
@@ -119,6 +124,7 @@ class Users(Resource):
 
 	def get(self):
 		"""Retrieves a list of users based on a query, default returns all users"""
+
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -369,6 +375,7 @@ class Items(Resource):
 
 	def post(self, listId):
 		"""Adds a new item to a list"""
+
 		if 'username' not in session:
 			abort(403)
 		if not request.json:
@@ -402,6 +409,7 @@ class Items(Resource):
 
 class Item(Resource):
 	"""Handles indiviual items"""
+
 	cursor = None
 	dbConnection = None
 
