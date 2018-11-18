@@ -158,7 +158,7 @@ class User(Resource):
 			abort(401)
 		if not request.json:
 			abort(400)
-		nickname = request.json.get('nickname', '')
+		screen_name = request.json.get('screen_name', '')
 		try:
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -169,7 +169,7 @@ class User(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'updateName'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (session['username'], nickname)
+			sqlArgs = (session['username'], screen_name)
 			self.cursor.callproc(sql,sqlArgs)
 			row = self.cursor.fetchone()
 			if row is None:
