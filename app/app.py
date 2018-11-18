@@ -144,7 +144,7 @@ class Users(Resource):
 				self.cursor.close()
 			if self.dbConnection is not None:
 				self.dbConnection.close()
-		return make_response(jsonify({'lists': rows}), 200)
+		return make_response(jsonify({'users': rows}), 200)
 
 class User(Resource):
 	"""Handles individual users"""

@@ -42,7 +42,7 @@ END//
 CREATE PROCEDURE deleteUser(IN name VARCHAR(255))
 BEGIN
 DELETE FROM users
- WHERE user = name;
+ WHERE username = name;
 END//
 
 CREATE PROCEDURE updateName(IN user VARCHAR(255), name VARCHAR(255))
