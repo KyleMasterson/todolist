@@ -92,7 +92,7 @@ class SignIn(Resource):
 		return make_response(jsonify(response), responseCode)
 
 	def get(self):
-		"""Valids that the user is logged in"""
+		"""Validates that the user is logged in"""
 
 		Success = False
 		if 'username' in session:
@@ -160,6 +160,7 @@ class User(Resource):
 
 	def put(self, userId):
 		"""Allows the currently logged in user to edit their information"""
+
 		if userId != session['username']:
 			abort(401)
 		if not request.json:
@@ -285,7 +286,7 @@ class Lists(Resource):
 		return make_response(jsonify({'lists': rows}), 200)
 
 class List(Resource):
-	"""Handles indiviual lists"""
+	"""Handles individual lists"""
 
 	cursor = None
 	dbConnection = None
@@ -319,6 +320,7 @@ class List(Resource):
 
 	def delete(self, listId):
 		"""Deletes a list by id, if the current user is the owner"""
+
 		if 'username' not in session:
 			abort(403)
 		try:
@@ -408,7 +410,7 @@ class Items(Resource):
 		return make_response(jsonify( { "uri" : uri } ), 201)
 
 class Item(Resource):
-	"""Handles indiviual items"""
+	"""Handles individual items"""
 
 	cursor = None
 	dbConnection = None
