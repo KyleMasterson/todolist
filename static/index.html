@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Canada Schools</title>
+</head>
+<body>
+
+  <div id="app" class="container">
+    <div class="container">
+      <button v-on:click="schoolsget()"> listSchools </button>
+      <div class="container">
+        <ul>
+          <li v-for="s in schs">{{s}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      School ID: <input type="text" name="schoolID" id="a"><br>
+    </div>
+    <div class="container">
+      <button v-on:click="schoolIDget(document.getElementById('a').value)"> listSchool</button>
+      <p>{{sch}}</p>
+    </div>
+    <div class="container">
+      <button v-on:click="addSchool()"> Add School</button>
+      <p>{{addedSch}}</p>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
