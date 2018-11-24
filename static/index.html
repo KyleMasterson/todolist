@@ -6,30 +6,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <title>Canada Schools</title>
+  <title>Todolist</title>
 </head>
 <body>
-
-  <div id="app" class="container">
-    <div class="container">
-      <button v-on:click="schoolsget()"> listSchools </button>
-      <div class="container">
-        <ul>
-          <li v-for="s in schs">{{s}}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="container">
-      School ID: <input type="text" name="schoolID" id="a"><br>
-    </div>
-    <div class="container">
-      <button v-on:click="schoolIDget(document.getElementById('a').value)"> listSchool</button>
-      <p>{{sch}}</p>
-    </div>
-    <div class="container">
-      <button v-on:click="addSchool()"> Add School</button>
-      <p>{{addedSch}}</p>
-    </div>
+  <div id="vueRoot">
+    <form ref="form">
+      <input name="uLogin" v-model="user.username">
+      <input type="password" name="pLogin" v-model="user.password">
+      <a href="#" v-on:click="signIn">Login</a>
+    </form>
   </div>
   <script src="main.js"></script>
 </body>

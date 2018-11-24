@@ -5,3 +5,4 @@ cookie-jar
 *.log
 scripts/cookie-jar
 *.pyc
+*.tar
