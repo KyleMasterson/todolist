@@ -1,6 +1,7 @@
 #/usr/bin/env python
 APP_HOST = 'info3103.cs.unb.ca'
 APP_PORT = 24842
+APP_DEBUG = True
 
 DBHOST = 'localhost'
 DBUSER = 'kmasters'

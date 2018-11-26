@@ -4,11 +4,12 @@ from flask_session import Session
 from ldap3 import Server, Connection, ALL
 from ldap3.core.exceptions import *
 import ssl
-from flask import Flask, jsonify, abort, request, make_response, session
+from flask import Flask, jsonify, abort, request, make_response, session, send_from_directory
 from flask_restful import reqparse, Resource, Api
 import pymysql.cursors
 import json
 from flask_cors import CORS
+import os
 
 import cgitb
 import cgi
@@ -25,6 +26,11 @@ app.config['SESSION_COOKIE_NAME'] = 'peanutButter'
 app.config['SESSION_COOKIE_DOMAIN'] = settings.APP_HOST
 Session(app)
 CORS(app)
+
+@app.route('/')
+def root():
+
+	return send_from_directory(os.path.join(os.getcwd(), 'static'), 'index.html')
 
 @app.errorhandler(400)
 def not_found(error):

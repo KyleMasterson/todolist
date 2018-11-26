@@ -13,9 +13,10 @@
     <form ref="form">
       <input name="uLogin" v-model="user.username">
       <input type="password" name="pLogin" v-model="user.password">
-      <a href="#" v-on:click="signIn">Login</a>
+      <a href="#" v-if="loggedIn" v-on:click="signOut">Logout</a>
+      <a href="#" v-else v-on:click="signIn">Login</a>
     </form>
   </div>
-  <script src="main.js"></script>
+  <script src="static/main.js"></script>
 </body>
 </html>
