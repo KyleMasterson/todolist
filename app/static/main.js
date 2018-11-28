@@ -3,13 +3,25 @@ var user = {
   password: ''
 };
 
+const Users = { 
+  template: "#users"
+};
+
+const router = new VueRouter({
+  routes: [
+    { path: '/users', component: Users }
+  ]
+})
+
 var app = new Vue({
   el: '#vueRoot',
   data: {
     user: user,
+    username: user.username,
     res: '',
-    loggedIn: false
+    notLoggedIn: true
   },
+  router: router,
   methods:{
     signIn : function (){
       let axiosConfig = {
@@ -21,7 +33,7 @@ var app = new Vue({
       axios.post('https://info3103.cs.unb.ca:24842/signin', user, axiosConfig)
       .then((res) => {
         app.res=res.data;
-        app.loggedIn=true;
+        app.notLoggedIn=false;
       })
       .catch((err) => {
         app.res=err;
@@ -35,6 +47,38 @@ var app = new Vue({
         }
       };
       axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
+      .then((res) => {
+        app.res=res.data;
+        app.notLoggedIn=true;
+      })
+      .catch((err) => {
+        app.res= err;
+      });
+    },
+    updateUser : function (){
+      let axiosConfig = {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+        }
+      };
+      axios.put('https://info3103.cs.unb.ca:24842/signin', app.screenName, axiosConfig)
+      .then((res) => {
+        app.res=res.data;
+        app.loggedIn=true;
+      })
+      .catch((err) => {
+        app.res=err;
+      });
+    },
+    deleteUser : function (){
+      let axiosConfig = {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+        }
+      };
+      axios.delete('https://info3103.cs.unb.ca:24842/users/' + user.username, axiosConfig)
       .then((res) => {
         app.res=res.data;
         app.loggedIn=false;

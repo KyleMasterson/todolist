@@ -29,7 +29,6 @@ CORS(app)
 
 @app.route('/')
 def root():
-
 	return send_from_directory(os.path.join(os.getcwd(), 'static'), 'index.html')
 
 @app.errorhandler(400)

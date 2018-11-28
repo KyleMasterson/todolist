@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <title>Todolist</title>
-</head>
-<body>
-  <div id="vueRoot">
-    <form ref="form">
-      <input name="uLogin" v-model="user.username">
-      <input type="password" name="pLogin" v-model="user.password">
-      <a href="#" v-if="loggedIn" v-on:click="signOut">Logout</a>
-      <a href="#" v-else v-on:click="signIn">Login</a>
-    </form>
-  </div>
-  <script src="static/main.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/styles.css">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <title>Todolist</title>
+    <link rel="icon" type="image/png" href="static/favicon.ico" />
+  </head>
+  <body>
+    <div id="vueRoot">
+      <header>
+          <a id="loginField" v-if="notLoggedIn" v-on:click="signIn">Login</a> 
+          <a id="logoutField" v-else v-on:click="signOut">Logout</a>
+          <input id="pField" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
+          <input id="uField" v-if="notLoggedIn" name="uLogin" v-model="user.username">
+      </header>
+      <router-view></router-view>
+      <footer>
+          <img id="footerIcon" src="static/favicon.ico" alt="Todolist">
+          <p id="info">Kyle Masterson and Pat Mollins | 2018</p>
+          <p id="about">UNB INFO3103 Term Project</p>
+      <footer>
+    </div>
+    <script id="users" type="text/x-template">
+      <!-- Users stuff goes here-->
+    </script>
+    <script id="list" type="text/x-template">
+      <!-- List stuff goes here-->
+    </script>
+    <script id="item" type="text/x-template">
+      <!-- Items stuff goes here-->
+    </script>
+    <script src="static/main.js"></script>
+  </body>
 </html>
