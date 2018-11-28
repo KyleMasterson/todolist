@@ -24,7 +24,7 @@ var app = new Vue({
         app.loggedIn=true;
       })
       .catch((err) => {
-        app.res= err;
+        app.res=err;
       });
     },
     signOut : function (){
