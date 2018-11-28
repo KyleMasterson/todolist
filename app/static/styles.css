@@ -3,7 +3,7 @@ html, body {
 }
 header {
     min-height: 100%;
-    margin-bottom: -100px;
+    margin-bottom: -75px;
     background: #ddd;
     padding: 1em;
 }
@@ -14,7 +14,7 @@ header:after {
     padding: 1em;
 }
 footer {
-    height: 100px;
+    height: 50px;
     background: #eee;
 }
 #footerIcon {
@@ -31,7 +31,13 @@ footer {
     float: right;
     padding: 1em;
 }
-#uField, #pField, #loginField {
+#login {
     float: right;
-    padding: 0.25em;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 2px;
+}
+
+#loginField {
+    float: right;
 }

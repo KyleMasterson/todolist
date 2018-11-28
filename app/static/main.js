@@ -1,15 +1,27 @@
 var user = {
-  username:'',
+  username: '',
   password: ''
 };
 
-const Users = { 
+const Users = {
   template: "#users"
+};
+const Index = {
+  template: "#index"
+};
+const Lists = {
+  template: "#list"
+};
+const Items = {
+  template: "#item"
 };
 
 const router = new VueRouter({
   routes: [
-    { path: '/users', component: Users }
+    { path: '/', component: Index },
+    { path: '/users', component: Users },
+    { path: '/lists', component: Lists },
+    { path: '/items', component: Items }
   ]
 })
 
@@ -22,8 +34,8 @@ var app = new Vue({
     notLoggedIn: true
   },
   router: router,
-  methods:{
-    signIn : function (){
+  methods: {
+    signIn: function () {
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -31,15 +43,15 @@ var app = new Vue({
         }
       };
       axios.post('https://info3103.cs.unb.ca:24842/signin', user, axiosConfig)
-      .then((res) => {
-        app.res=res.data;
-        app.notLoggedIn=false;
-      })
-      .catch((err) => {
-        app.res=err;
-      });
+        .then((res) => {
+          app.res = res.data;
+          app.notLoggedIn = false;
+        })
+        .catch((err) => {
+          app.res = err;
+        });
     },
-    signOut : function (){
+    signOut: function () {
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -47,15 +59,15 @@ var app = new Vue({
         }
       };
       axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
-      .then((res) => {
-        app.res=res.data;
-        app.notLoggedIn=true;
-      })
-      .catch((err) => {
-        app.res= err;
-      });
+        .then((res) => {
+          app.res = res.data;
+          app.notLoggedIn = true;
+        })
+        .catch((err) => {
+          app.res = err;
+        });
     },
-    updateUser : function (){
+    updateUser: function () {
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -63,15 +75,15 @@ var app = new Vue({
         }
       };
       axios.put('https://info3103.cs.unb.ca:24842/signin', app.screenName, axiosConfig)
-      .then((res) => {
-        app.res=res.data;
-        app.loggedIn=true;
-      })
-      .catch((err) => {
-        app.res=err;
-      });
+        .then((res) => {
+          app.res = res.data;
+          app.loggedIn = true;
+        })
+        .catch((err) => {
+          app.res = err;
+        });
     },
-    deleteUser : function (){
+    deleteUser: function () {
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -79,13 +91,13 @@ var app = new Vue({
         }
       };
       axios.delete('https://info3103.cs.unb.ca:24842/users/' + user.username, axiosConfig)
-      .then((res) => {
-        app.res=res.data;
-        app.loggedIn=false;
-      })
-      .catch((err) => {
-        app.res= err;
-      });
+        .then((res) => {
+          app.res = res.data;
+          app.loggedIn = false;
+        })
+        .catch((err) => {
+          app.res = err;
+        });
     },
   }
 })
