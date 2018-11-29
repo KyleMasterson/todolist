@@ -5,30 +5,34 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="static/styles.css">
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <title>Todolist</title>
-  <link rel="icon" type="image/png" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="static/favicon.ico" />
 </head>
 
 <body>
   <div id="vueRoot">
-    <header>
-      <a id="login" v-if="notLoggedIn" v-on:click="signIn">Login</a>
-      <a id="login" v-else v-on:click="signOut">Logout</a>
-      <input id="loginField" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
-      <p id="login">Password: </p>
-      <input id="loginField" v-if="notLoggedIn" name="uLogin" v-model="user.username">
-      <p id="login">Username: </p>
-    </header>
+    <div class="navbar bg-dark" style="background-color:slateblue">
+      <a class="navbar-brand">Todolist</a>
+      <div class="nav nav-center">
+        <a id="login" v-if="notLoggedIn" v-on:click="signIn">Login</a>
+        <a id="login" v-else v-on:click="signOut">Logout</a>
+        <input id="loginField" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
+        <p id="login">Password: </p>
+        <input id="loginField" v-if="notLoggedIn" name="uLogin" v-model="user.username">
+        <p id="login">Username: </p>
+      </div>
+    </div>
     <router-view></router-view>
-    <footer>
+    <footer class="page-footer font-small special-color-dark">
       <img id="footerIcon" src="favicon.ico" alt="Todolist">
       <p id="info">Kyle Masterson and Pat Mollins | 2018</p>
       <p id="about">UNB INFO3103 Term Project</p>
-      <footer>
+    </footer>
+  </div>
   </div>
   <script id="index" type="text/x-template">
     <!-- Index stuff goes here-->
@@ -42,7 +46,7 @@
   <script id="item" type="text/x-template">
     <!-- Items stuff goes here-->
   </script>
-  <script src="main.js"></script>
+  <script src="static/main.js"></script>
 </body>
 
 </html>

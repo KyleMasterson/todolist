@@ -13,10 +13,6 @@ header:after {
     height: 100px;
     padding: 1em;
 }
-footer {
-    height: 50px;
-    background: #eee;
-}
 #footerIcon {
     width:30px;
     height: auto;
@@ -25,11 +21,11 @@ footer {
 }
 #info {
     display:inline-block;
-    padding: 1em;
+    padding: em;
 }
 #about {
     float: right;
-    padding: 1em;
+    padding: 0.5em;
 }
 #login {
     float: right;
@@ -40,4 +36,11 @@ footer {
 
 #loginField {
     float: right;
+}
+.nav.nav-center {
+    margin:0;
+    float:none;
+}
+.navbar-inner{
+    text-align:center;
 }
