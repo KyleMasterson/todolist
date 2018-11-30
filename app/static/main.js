@@ -7,13 +7,13 @@ const Users = {
   template: "#users"
 };
 const Index = {
-  template: "#index"
+  template: "#home"
 };
 const Home = {
-  template: "#list"
+  template: "#profile"
 };
 const Profile = {
-  template: "#item"
+  template: "#users"
 };
 
 const router = new VueRouter({
@@ -49,6 +49,7 @@ var app = new Vue({
         })
         .catch((err) => {
           app.res = err;
+          alert("Please ensure you used a valid UNB FCS login");
         });
     },
     signOut: function () {

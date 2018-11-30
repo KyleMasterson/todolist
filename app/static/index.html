@@ -21,14 +21,14 @@
 
 <body style="background-color:rgb(90, 80, 80)">
   <div id="vueRoot">
-    <div class="navbar bg-dark" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
-      <p v-if="notLoggedIn" id="login">Username: </p>
-      <input id="loginField" v-if="notLoggedIn" name="uLogin" v-model="user.username">
-      <p v-if="notLoggedIn" id="login">Password: </p>
-      <input id="loginField" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
-      <a class="btn btn-primary" v-if="notLoggedIn" v-on:click="signIn">Login</a>
-      <a class="btn btn-primary" v-else v-on:click="signOut">Logout</a>
-    </div>
+    <form class="navbar bg-dark" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
+        <p v-if="notLoggedIn" class="login">Username: </p>
+        <input class="loginField" autocomplete="on" v-if="notLoggedIn" id="uLogin" v-model="user.username">
+        <p v-if="notLoggedIn" class="login">Password: </p>
+        <input class="loginField" autocomplete="on" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
+        <a class="btn btn-primary" v-if="notLoggedIn" v-on:click="signIn">Login</a>
+        <a class="btn btn-primary" v-else v-on:click="signOut">Logout</a>
+    </form>
     <router-view></router-view>
     <footer class="page-footer font-small special-color-dark">
       <hr />
