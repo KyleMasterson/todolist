@@ -9,10 +9,10 @@ const Users = {
 const Index = {
   template: "#index"
 };
-const Lists = {
+const Home = {
   template: "#list"
 };
-const Items = {
+const Profile = {
   template: "#item"
 };
 
@@ -20,8 +20,8 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Index },
     { path: '/users', component: Users },
-    { path: '/lists', component: Lists },
-    { path: '/items', component: Items }
+    { path: '/home', component: Home },
+    { path: '/profile', component: Profile }
   ]
 })
 
