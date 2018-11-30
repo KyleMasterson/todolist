@@ -31,7 +31,7 @@ header:after {
     float: right;
     padding-right: 5px;
     padding-left: 5px;
-    padding-top: 2px;
+    padding-top: 10px;
     vertical-align: middle;
 }
 #loginField {
@@ -40,4 +40,23 @@ header:after {
 }
 .navbar-brand {
     display: inline-block;
+}
+.btn {
+    margin: 10px;
+    background-color: rgb(90, 80, 80);
+    border-color: rgb(90, 80, 80);
+}
+.btn:hover {
+    background-color: rgb(150, 150, 150);
+    border-color: rgb(90, 80, 80);
+}
+.btn:active, 
+.btn:focus, 
+.btn:active:focus, 
+.btn-primary:focus, 
+.btn-primary:active, 
+.btn-primary:active:focus {
+    background-color: rgb(200, 200, 200) !important;
+    box-shadow: none !important;
+    border-color: rgb(90, 80, 80) !important;
 }
