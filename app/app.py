@@ -74,7 +74,7 @@ class SignIn(Resource):
 				ldapConnection.start_tls()
 				ldapConnection.bind()
 				session['username'] = request_params['username']
-				response = {'Status': 'Success' }
+				response = {'Status': 'Success', 'Username': session['username'] }
 				responseCode = 201
 				dbConnection = pymysql.connect(settings.DBHOST,
 					settings.DBUSER,

@@ -32,7 +32,6 @@ var app = new Vue({
   el: '#vueRoot',
   data: {
     user: user,
-    username: user.username,
     res: '',
     notLoggedIn: true
   },
@@ -51,6 +50,7 @@ var app = new Vue({
           app.res = res.data;
           router.push('/home');
           app.notLoggedIn = false;
+          user.password = '';
         })
         .catch((err) => {
           app.res = err;
@@ -68,7 +68,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.notLoggedIn = true;
-          router.push({ path: '/index', params: { userId }})
+          router.push('/');
         })
         .catch((err) => {
           app.res = err;
@@ -102,7 +102,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.loggedIn = false;
-          router.push({ path: '/index' })
+          router.push('/');
         })
         .catch((err) => {
           app.res = err;
@@ -118,11 +118,12 @@ var app = new Vue({
       axios.get('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
         .then((res) => {
           app.notLoggedIn = false;
-          app.username = res.data['Username'];
+          user.username = res.data['Username'];
+          router.push('/home');
         })
         .catch((err) => {
           app.notLoggedIn = true;
-    
+          router.push('/');
         })
       }
   },

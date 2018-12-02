@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Welcome home, {{ $root.username }}</h1>
+        <h1>Welcome home, {{ $root.user.username }}</h1>
     </div>
 </template>
 
