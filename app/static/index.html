@@ -6,20 +6,14 @@
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <link rel="stylesheet" href="static/styles.css">
-  <!-- Local testing:
-  <link rel="stylesheet" href="styles.css">
-  -->
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <title>Todolist</title>
   <link rel="icon" type="image/png" href="static/favicon.ico" />
-  <!-- Local testing: 
-  <link rel="icon" type="image/png" href="favicon.ico" />
-  -->
 </head>
 
-<body style="background-color:rgb(90, 80, 80)">
+<body style="background-color:rgb(130, 130, 130)">
   <div id="vueRoot">
     <form class="navbar bg-dark" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
         <p v-if="notLoggedIn" class="login">Username: </p>
@@ -38,22 +32,7 @@
     </footer>
   </div>
   </div>
-  <script id="index" type="text/x-template">
-    <!-- Index stuff goes here-->
-  </script>
-  <script id="home" type="text/x-template">
-    <!-- Home stuff goes here-->
-  </script>
-  <script id="profile" type="text/x-template">
-    <!-- Profile stuff goes here-->
-  </script>
-  <script id="users" type="text/x-template">
-    <!-- Users stuff goes here-->
-  </script>
   <script src="static/main.js"></script>
-  <!-- Local testing:
-  <script src="main.js"></script>
-  -->
 </body>
 
 </html>

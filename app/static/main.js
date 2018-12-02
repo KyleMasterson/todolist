@@ -3,25 +3,19 @@ var user = {
   password: ''
 };
 
-const Users = {
-  template: "#users"
-};
-const Index = {
-  template: "#home"
-};
-const Home = {
-  template: "#profile"
-};
-const Profile = {
-  template: "#users"
-};
+import Index from './components/Index.vue';
+import Home from './components/Home.vue';
+import Profile from './components/Profile.vue';
+import Users from './components/Users.vue';
+import Error from './components/Error.vue';
 
 const router = new VueRouter({
   routes: [
     { path: '/', component: Index },
     { path: '/users', component: Users },
     { path: '/home', component: Home },
-    { path: '/profile', component: Profile }
+    { path: '/profile', component: Profile },
+    { path: '*', component: Error }
   ]
 })
 
@@ -36,6 +30,7 @@ var app = new Vue({
   router: router,
   methods: {
     signIn: function () {
+      
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -46,6 +41,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.notLoggedIn = false;
+          router.push({ path: 'Home', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -63,6 +59,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.notLoggedIn = true;
+          router.push({ path: 'Index', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -79,6 +76,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.loggedIn = true;
+          router.push({ path: 'Home', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -95,6 +93,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.loggedIn = false;
+          router.push({ path: 'Index' })
         })
         .catch((err) => {
           app.res = err;

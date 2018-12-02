@@ -43,12 +43,12 @@ header:after {
 }
 .btn {
     margin: 10px;
-    background-color: rgb(90, 80, 80);
-    border-color: rgb(90, 80, 80);
+    background-color: rgb(80, 80, 80);
+    border-color: rgb(80, 80, 80);
 }
 .btn:hover {
     background-color: rgb(150, 150, 150);
-    border-color: rgb(90, 80, 80);
+    border-color: rgb(80, 80, 80);
 }
 .btn:active, 
 .btn:focus, 
