@@ -1,3 +1,9 @@
+import Vue from "vue";
+import VueRouter from "vue-router";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+
 var user = {
   username: '',
   password: ''
@@ -8,6 +14,9 @@ import Home from './components/Home.vue';
 import Profile from './components/Profile.vue';
 import Users from './components/Users.vue';
 import Error from './components/Error.vue';
+import './styles.css'
+
+Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
@@ -40,8 +49,8 @@ var app = new Vue({
       axios.post('https://info3103.cs.unb.ca:24842/signin', user, axiosConfig)
         .then((res) => {
           app.res = res.data;
+          router.push('/home');
           app.notLoggedIn = false;
-          router.push({ path: 'Home', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -59,7 +68,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.notLoggedIn = true;
-          router.push({ path: 'Index', params: { userId }})
+          router.push({ path: '/index', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -76,7 +85,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.loggedIn = true;
-          router.push({ path: 'Home', params: { userId }})
+          router.push({ path: '/home', params: { userId }})
         })
         .catch((err) => {
           app.res = err;
@@ -93,11 +102,31 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.loggedIn = false;
-          router.push({ path: 'Index' })
+          router.push({ path: '/index' })
         })
         .catch((err) => {
           app.res = err;
         });
     },
+    getUser: function() {
+      let axiosConfig = {
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+        }
+      };
+      axios.get('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
+        .then((res) => {
+          app.notLoggedIn = false;
+          app.username = res.data['Username'];
+        })
+        .catch((err) => {
+          app.notLoggedIn = true;
+    
+        })
+      }
+  },
+  created: function() {
+    this.getUser();
   }
 })

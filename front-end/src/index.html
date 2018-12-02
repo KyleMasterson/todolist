@@ -4,18 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <link rel="stylesheet" href="static/styles.css">
-  <script src="https://unpkg.com/vue@2.5.17/dist/vue.min.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
   <title>Todolist</title>
   <link rel="icon" type="image/png" href="static/favicon.ico" />
 </head>
 
 <body style="background-color:rgb(130, 130, 130)">
   <div id="vueRoot">
-    <form class="navbar bg-dark" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
+    <form class="navbar" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
         <p v-if="notLoggedIn" class="login">Username: </p>
         <input class="loginField" autocomplete="on" v-if="notLoggedIn" id="uLogin" v-model="user.username">
         <p v-if="notLoggedIn" class="login">Password: </p>
@@ -32,7 +27,6 @@
     </footer>
   </div>
   </div>
-  <script src="static/main.js"></script>
 </body>
 
 </html>

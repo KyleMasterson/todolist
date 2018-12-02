@@ -16,7 +16,7 @@ import cgi
 import sys
 import settings
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../front-end/dist", static_url_path="/dist")
 api = Api(app)
 cgitb.enable()
 
@@ -29,7 +29,7 @@ CORS(app)
 
 @app.route('/')
 def root():
-	return send_from_directory(os.path.join(os.getcwd(), 'static'), 'index.html')
+	return send_from_directory(os.path.join(os.getcwd(), '../front-end/dist'), 'index.html')
 
 @app.errorhandler(400)
 def not_found(error):
@@ -104,7 +104,7 @@ class SignIn(Resource):
 		Success = False
 		if 'username' in session:
 			username = session['username']
-			response = {'Status': 'Success'}
+			response = {'Status': 'Success', 'Username': username }
 			responseCode = 200
 		else:
 			response = {'Status': 'Fail'}
@@ -478,10 +478,7 @@ class Item(Resource):
 		finally:
 			if self.cursor is not None:
 				self.cursor.close()
-			if self.dbConnection is not None:
-				self.dbConnection.close()
-		return make_response(jsonify({"Item": row}), 200)
-
+				
 	def delete(self, listId, itemId):
 		"""Allows users to deletes items they own"""
 

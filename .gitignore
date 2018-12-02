@@ -6,3 +6,5 @@ cookie-jar
 scripts/cookie-jar
 *.pyc
 *.tar
+node_modules
+dist
