@@ -2,6 +2,7 @@
     <div>
         <h1>Welcome home, {{ $root.user.username }}</h1>
         <br>
+        <button v-on:click="gotoProfile">Profile</button>
         <h2>Todo Lists:</h2>
         <button v-on:click="getLists">Click Me!</button>
         
@@ -20,7 +21,9 @@
 
 <script>
 import axios from "axios";
-const url = 'https://info3103.cs.unb.ca:24842/lists';
+import VueRouter from "vue-router";
+import Vue from "vue";
+const url = 'https://info3103.cs.unb.ca:24843/lists';
 export default {
     
     data() {
@@ -30,6 +33,9 @@ export default {
         }
     },
     methods:{
+        gotoProfile: function(){
+            this.$router.push('/profile');
+        },
         getLists: function(){
             let axiosConfig = {
 				headers: {
@@ -56,9 +62,11 @@ export default {
 					"Access-Control-Allow-Origin": "*",
 				}
 			};
-			axios.post(url, { 
-				title: this.name, 
-				description: this.description
+			axios.post(url, {
+				params: {
+                    title: this.name,
+                    description: this.description
+				}
 			}, axiosConfig)
 			.then((res) => {
 				this.res=res.data;
