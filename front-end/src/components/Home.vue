@@ -20,7 +20,7 @@
 
 <script>
 import axios from "axios";
-const url = 'https://info3103.cs.unb.ca:24843/lists';
+const url = 'https://info3103.cs.unb.ca:24842/lists';
 export default {
     
     data() {
