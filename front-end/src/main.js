@@ -33,10 +33,25 @@ var app = new Vue({
   data: {
     user: user,
     res: '',
-    notLoggedIn: true
+    notLoggedIn: true,
+    screenName: ''
   },
   router: router,
   methods: {
+    getName: function () {
+      let axiosConfig = {
+          headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+          }
+      };
+      axios.get('https://info3103.cs.unb.ca:24842/users?user=' + user.username, this.screen_name, axiosConfig)
+          .then((res) => {
+            this.screenName = res.data['users'][0]['screen_name'];
+          })
+          .catch((err) => {
+          });
+  },
     signIn: function () {
       
       let axiosConfig = {
@@ -95,5 +110,14 @@ var app = new Vue({
   },
   created: function() {
     this.getUser();
+    this.getName();
   }
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.path === '/home') {
+    app.getName();
+  }
+
+  next();
 })

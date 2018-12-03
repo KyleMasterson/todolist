@@ -1,10 +1,11 @@
 <template>
     <div>
-        <h1>Welcome home, {{ $root.user.username }}</h1>
+        <h1 v-if="$root.screenName===''">Welcome home, {{ $root.user.username }}</h1>
+		<h1 v-else>Welcome home, {{ $root.screenName }}</h1>
         <br>
         <button v-on:click="gotoProfile">Profile</button>
         <h2>Todo Lists:</h2>
-        <button v-on:click="getLists">Click Me!</button>
+        <button v-on:click="getLists">Get Lists</button>
         
         <p>New List Name </p>
         <input Type="text" v-model="name" placeholder="Name goes here">
@@ -21,9 +22,7 @@
 
 <script>
 import axios from "axios";
-import VueRouter from "vue-router";
-import Vue from "vue";
-const url = 'https://info3103.cs.unb.ca:24843/lists';
+const url = 'https://info3103.cs.unb.ca:24842/lists';
 export default {
     
     data() {
@@ -63,10 +62,8 @@ export default {
 				}
 			};
 			axios.post(url, {
-				params: {
-                    title: this.name,
-                    description: this.description
-				}
+				title: this.name,
+				description: this.description
 			}, axiosConfig)
 			.then((res) => {
 				this.res=res.data;
