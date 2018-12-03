@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1 v-if="$root.screenName===''">Welcome home, {{ $root.user.username }}</h1>
-		<h1 v-else>Welcome home, {{ $root.screenName }}</h1>
+        <h1 v-if="$root.user.screenName===null||$root.user.screenName===''">Welcome home, {{ $root.user.username }}</h1>
+		<h1 v-else>Welcome home, {{ $root.user.screenName }}</h1>
         <br>
         <button v-on:click="gotoProfile">Profile</button>
         <h2>Todo Lists:</h2>
@@ -71,7 +71,7 @@ export default {
 			.catch((err) => {
 				this.res= err;
 			});
-        }
+        },
     }
 
 }

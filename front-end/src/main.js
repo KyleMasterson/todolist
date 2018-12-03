@@ -6,7 +6,8 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 var user = {
   username: '',
-  password: ''
+  password: '',
+  screenName: ''
 };
 
 import Index from './components/Index.vue';
@@ -33,8 +34,7 @@ var app = new Vue({
   data: {
     user: user,
     res: '',
-    notLoggedIn: true,
-    screenName: ''
+    notLoggedIn: true
   },
   router: router,
   methods: {
@@ -45,9 +45,13 @@ var app = new Vue({
           "Access-Control-Allow-Origin": "*",
           }
       };
-      axios.get('https://info3103.cs.unb.ca:24842/users?user=' + user.username, this.screen_name, axiosConfig)
+      axios.get('https://info3103.cs.unb.ca:24842/users?user=' + user.username, axiosConfig)
           .then((res) => {
-            this.screenName = res.data['users'][0]['screen_name'];
+            for(var i = 0; i < res.data['users'].length; i ++) {
+              if(res.data['users'][i]['username'] === user.username) {
+                user.screenName = res.data['users'][i]['screen_name'];
+              }
+            }
           })
           .catch((err) => {
           });
@@ -83,6 +87,7 @@ var app = new Vue({
         .then((res) => {
           app.res = res.data;
           app.notLoggedIn = true;
+          this.screenName = '';
           router.push('/');
         })
         .catch((err) => {
@@ -106,10 +111,12 @@ var app = new Vue({
           app.notLoggedIn = true;
           router.push('/');
         })
+
+      return user.username;
       }
   },
-  created: function() {
-    this.getUser();
+  created: async function() {
+    await this.getUser();
     this.getName();
   }
 })

@@ -49,7 +49,7 @@ export default {
             };
             axios.put('https://info3103.cs.unb.ca:24842/users/' + this.$root.user.username, { screen_name: this.screen_name }, axiosConfig)
                 .then((res) => {
-                this.updating = false;
+                    this.updating = false;
                 })
                 .catch((err) => {
                 });
@@ -68,7 +68,17 @@ export default {
                 })
                 .catch((err) => {
                 });
-        }
+            axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
+                .then((res) => {
+                    app.res = res.data;
+                    app.notLoggedIn = true;
+                    this.screenName = '';
+                    router.push('/');
+                })
+                .catch((err) => {
+                    app.res = err;
+                });
+            }
     }
 }
 </script>
