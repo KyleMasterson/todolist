@@ -41,21 +41,21 @@ header:after {
 .navbar-brand {
     display: inline-block;
 }
-.btn {
+.loginBtn {
     margin: 10px;
     background-color: rgb(80, 80, 80);
     border-color: rgb(80, 80, 80);
 }
-.btn:hover {
+.loginBtn:hover {
     background-color: rgb(150, 150, 150);
     border-color: rgb(80, 80, 80);
 }
-.btn:active, 
-.btn:focus, 
-.btn:active:focus, 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary:active:focus {
+.loginBtn:active, 
+.loginBtn:focus, 
+.loginBtn:active:focus, 
+.loginBtn-primary:focus, 
+.loginBtn-primary:active, 
+.loginBtn-primary:active:focus {
     background-color: rgb(200, 200, 200) !important;
     box-shadow: none !important;
     border-color: rgb(90, 80, 80) !important;

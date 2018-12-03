@@ -74,40 +74,6 @@ var app = new Vue({
           app.res = err;
         });
     },
-    updateUser: function () {
-      let axiosConfig = {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-        }
-      };
-      axios.put('https://info3103.cs.unb.ca:24842/signin', app.screenName, axiosConfig)
-        .then((res) => {
-          app.res = res.data;
-          app.loggedIn = true;
-          router.push({ path: '/home', params: { userId }})
-        })
-        .catch((err) => {
-          app.res = err;
-        });
-    },
-    deleteUser: function () {
-      let axiosConfig = {
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-        }
-      };
-      axios.delete('https://info3103.cs.unb.ca:24842/users/' + user.username, axiosConfig)
-        .then((res) => {
-          app.res = res.data;
-          app.loggedIn = false;
-          router.push('/');
-        })
-        .catch((err) => {
-          app.res = err;
-        });
-    },
     getUser: function() {
       let axiosConfig = {
         headers: {

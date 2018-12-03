@@ -15,8 +15,8 @@
         <input class="loginField" autocomplete="on" v-if="notLoggedIn" id="uLogin" v-model="user.username">
         <p v-if="notLoggedIn" class="login">Password: </p>
         <input class="loginField" autocomplete="on" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
-        <a class="btn btn-primary" v-if="notLoggedIn" v-on:click="signIn">Login</a>
-        <a class="btn btn-primary" v-else v-on:click="signOut">Logout</a>
+        <a class="btn btn-primary loginBtn" v-if="notLoggedIn" v-on:click="signIn">Login</a>
+        <a class="btn btn-primary loginBtn" v-else v-on:click="signOut">Logout</a>
     </form>
     <router-view></router-view>
     <footer class="page-footer font-small special-color-dark">
