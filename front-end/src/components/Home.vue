@@ -56,11 +56,9 @@ export default {
 					"Access-Control-Allow-Origin": "*",
 				}
 			};
-			axios.post(url, {
-				params: {
-                    title: this.name,
-                    description: this.description
-				}
+			axios.post(url, { 
+				title: this.name, 
+				description: this.description
 			}, axiosConfig)
 			.then((res) => {
 				this.res=res.data;
