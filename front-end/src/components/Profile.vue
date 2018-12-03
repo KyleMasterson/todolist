@@ -7,6 +7,7 @@
         <input v-if="updating" id="newName" v-model="screen_name">
         <button v-if="updating" type="button" class="btn btn-success" v-on:click="updateUser">Update Screen Name</button>
         <button type="button" class="btn btn-danger" v-on:click="deleteUser">Delete Account</button>
+        <button type="button" class="btn btn-primary" v-on:click="goHome">Back</button>
     </div>
 </template>
 <script>
@@ -21,6 +22,9 @@ export default {
         }
     },
     methods: {
+        goHome: function(){
+            this.$router.push('/home');
+        },
         getUser: function () {
             let axiosConfig = {
                 headers: {
