@@ -60,7 +60,7 @@ export default {
             axios.delete('https://info3103.cs.unb.ca:24842/users/' + this.$root.user.username, axiosConfig)
                 .then((res) => {
                 this.$root.notLoggedIn = true;
-                router.push('/');
+                this.$router.push('/');
                 })
                 .catch((err) => {
                 });
