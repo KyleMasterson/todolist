@@ -52,7 +52,10 @@ export default {
             items = [];
 	    temp = [];
 	    for(user in users) {
-	    	if (filter.contains(user.username) || filter.contains(user.screen_name)) {
+	    	if (filter.contains(user.username) || 
+		filter.contains(user.screen_name) || 
+		user.username.contains(filter) || 
+		user.screen_name.contains(filter)) {
 			temp.push(user);
 		}
 	    }
