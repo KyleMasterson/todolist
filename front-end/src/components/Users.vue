@@ -1,7 +1,6 @@
 <template>
     <div>
-        <input v-model="filter">
-        <button type="button" class="btn btn-success" v-on:click="filterUsers">Search</button>
+        <input v-model="filter" v-on:change="filterUsers">
         <table>
             <tr>
                 <th>Username</th>
