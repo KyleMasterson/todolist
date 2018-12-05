@@ -1,12 +1,14 @@
 <template>
-    <div>
-        <button type="button" class="btn btn-success" v-on:click="getUser">Update Account</button>
-        <label v-if="updating">Current Display Name:</label>
+    <div class="profile">
+        <button v-if="updating" type="button" class="btn btn-success" v-on:click="hide">Update Account</button>
+        <button v-else type="button" class="btn btn-success" v-on:click="getUser">Update Account</button>
+        <label v-if="updating">New Display Name</label>
+        <input v-if="updating" id="newName" v-model="screen_name">        
+        <label v-if="updating">Current Display Name</label>
         <input v-if="updating" id="currentName" v-model="currentName" readonly>
-        <label v-if="updating">New Display Name:</label>
-        <input v-if="updating" id="newName" v-model="screen_name">
         <button v-if="updating" type="button" class="btn btn-success" v-on:click="updateUser">Update Screen Name</button>
-        <button type="button" class="btn btn-danger" v-on:click="deleteUser">Delete Account</button>
+        <button type="button" class="btn btn-danger" v-on:click="confirm">Delete Account</button>
+        <button v-if="deleting" type="button" class="btn btn-danger" v-on:click="deleteUser">Click to Delete</button>
         <button type="button" class="btn btn-primary" v-on:click="goHome">Back</button>
     </div>
 </template>
@@ -18,12 +20,19 @@ export default {
         return {
             screen_name: '',
             currentName: '',
-            updating: false
+            updating: false,
+            deleting: false
         }
     },
     methods: {
         goHome: function(){
             this.$router.push('/home');
+        },
+        confirm: function () {
+            this.deleting = !this.deleting;
+        },
+        hide: function () {
+            this.updating = false;
         },
         getUser: function () {
             let axiosConfig = {
@@ -70,13 +79,10 @@ export default {
                 });
             axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
                 .then((res) => {
-                    app.res = res.data;
-                    app.notLoggedIn = true;
-                    this.screenName = '';
                     router.push('/');
                 })
                 .catch((err) => {
-                    app.res = err;
+                    this.res = err;
                 });
             }
     }

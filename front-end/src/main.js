@@ -16,6 +16,7 @@ import Profile from './components/Profile.vue';
 import Users from './components/Users.vue';
 import Error from './components/Error.vue';
 import './styles.css'
+import "./images/favicon.ico";
 
 Vue.use(VueRouter);
 
@@ -124,6 +125,9 @@ var app = new Vue({
 router.beforeEach((to, from, next) => {
   if(to.path === '/home') {
     app.getName();
+  }
+  if(to.path === '/') {
+    app.getUser();
   }
 
   next();

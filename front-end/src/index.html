@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>Todolist</title>
-  <link rel="icon" type="image/png" href="static/favicon.ico" />
+  <link rel="icon" href="<%= require('./images/favicon.ico') %>">
 </head>
 
 <body style="background-color:rgb(130, 130, 130)">
@@ -21,7 +21,7 @@
     <router-view></router-view>
     <footer class="page-footer font-small special-color-dark">
       <hr />
-      <img id="footerIcon" src="static/favicon.ico" alt="Todolist">
+      <img id="footerIcon" src="<%= require('./images/favicon.ico') %>" alt="Todolist">
       <p id="info">Kyle Masterson and Pat Mollins | 2018</p>
       <p id="about">UNB INFO3103 Term Project</p>
     </footer>

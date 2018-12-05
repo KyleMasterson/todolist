@@ -271,6 +271,9 @@ class Lists(Resource):
 		""""Allows users to retrieve lists matching a query, otherwise returns the whole set"""
 		
 		try:
+			user = session['username']
+			if (request.args['user']):
+				user = request.args['user']
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
 				settings.DBUSER,
@@ -280,7 +283,7 @@ class Lists(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getLists'
 			self.cursor = dbConnection.cursor()
-			sqlArgs = (session.get('username', ''),)
+			sqlArgs = (user,)
 			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:

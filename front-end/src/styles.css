@@ -16,12 +16,11 @@ header:after {
 #footerIcon {
     width:30px;
     height: auto;
-    display:inline-block;
+    float: left;
     padding-left: 0.5em;
 }
 #info {
-    display:inline-block;
-    padding: em;
+    float: left;
 }
 #about {
     float: right;
@@ -59,4 +58,36 @@ header:after {
     background-color: rgb(200, 200, 200) !important;
     box-shadow: none !important;
     border-color: rgb(90, 80, 80) !important;
+}
+div {
+    margin-left:auto;
+    margin-right:auto;
+    width:100%;
+    text-align: center;
+}
+footer {
+    position:absolute;
+    bottom:0;
+    width: 100%
+}
+.profile {
+    text-align: center;
+    width: 250px;
+    vertical-align: top;
+    padding: 10px;
+}
+#newName, #currentName {
+    margin: 10px;
+}
+.btn {
+    margin: 10px;
+}
+table, th, td {
+    border: 1px solid black;
+}
+th, td {
+    padding: 5px;
+}
+tr:hover {
+    background-color: red;
 }
