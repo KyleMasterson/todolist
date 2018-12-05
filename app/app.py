@@ -269,10 +269,10 @@ class Lists(Resource):
 
 	def get(self):
 		""""Allows users to retrieve lists matching a query, otherwise returns the whole set"""
-		
+
 		try:
 			user = session['username']
-			if (request.args['user']):
+			if ('user' in request.args):
 				user = request.args['user']
 			dbConnection = pymysql.connect(
 				settings.DBHOST,
@@ -361,7 +361,7 @@ class Items(Resource):
 	cursor = None
 	dbConnection = None
 
-	def get(self):
+	def get(self, listId):
 		"""Retrieves all items associated with a list"""
 
 		try:
@@ -374,7 +374,8 @@ class Items(Resource):
 				cursorclass= pymysql.cursors.DictCursor)
 			sql = 'getItems'
 			self.cursor = dbConnection.cursor()
-			self.cursor.callproc(sql)
+			sqlArgs = (listId,)
+			self.cursor.callproc(sql, sqlArgs)
 			rows = self.cursor.fetchall()
 		except:
 			abort(500)

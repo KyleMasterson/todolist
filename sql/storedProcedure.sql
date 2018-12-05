@@ -104,4 +104,10 @@ BEGIN
   WHERE itemID = items.id
   AND userID = lists.user_name;
 END//
+
+CREATE PROCEDURE getItems(IN listID INT(11))
+BEGIN
+ SELECT * FROM items
+  WHERE list_id = listID;
+END//
 DELIMITER ;
