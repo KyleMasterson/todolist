@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- TODO: Search bar to use method to filter user list -->
         <input v-model="filter">
         <button type="button" class="btn btn-success" v-on:click="filterUsers">Search</button>
         <table>
@@ -52,6 +51,14 @@ export default {
         filterUsers: function() {
             lists = [];
             items = [];
+	    temp = [];
+	    for(user in users) {
+	    	if (filter.contains(user.username) || filter.contains(user.screen_name)) {
+			temp.push(user);
+		}
+	    }
+	    
+	    users = temp;
         },
         getUsers: function() {
         let axiosConfig = {
