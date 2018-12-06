@@ -65,15 +65,13 @@ var app = new Vue({
           "Access-Control-Allow-Origin": "*",
         }
       };
-      axios.post('https://info3103.cs.unb.ca:24842/signin', { 
-        "username": this.user.username.toLowerCase(),
-        "password": this.user.password
-      }, axiosConfig)
+      axios.post('https://info3103.cs.unb.ca:24842/signin', user, axiosConfig)
         .then((res) => {
           app.res = res.data;
           router.push('/home');
           app.notLoggedIn = false;
           user.password = '';
+          user.username = user.username.toLowerCase();
         })
         .catch((err) => {
           app.res = err;
