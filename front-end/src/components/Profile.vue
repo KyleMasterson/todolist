@@ -56,6 +56,10 @@ export default {
                 "Access-Control-Allow-Origin": "*",
                 }
             };
+            if(this.screen_name === '' || this.screen_name === null) {
+                alert("Please Enter a Name");
+                return;
+            }
             axios.put('https://info3103.cs.unb.ca:24842/users/' + this.$root.user.username, { screen_name: this.screen_name }, axiosConfig)
                 .then((res) => {
                     this.updating = false;
