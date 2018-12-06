@@ -525,5 +525,4 @@ if __name__ == "__main__":
 	app.run(
 		host=settings.APP_HOST,
 		port=settings.APP_PORT,
-		ssl_context=context,
-		debug=settings.APP_DEBUG)
+		ssl_context=context)

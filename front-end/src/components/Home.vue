@@ -4,6 +4,7 @@
 		<h1 v-else>Welcome home, {{ $root.user.screenName }}</h1>
         <br>
         <button v-on:click="gotoProfile">Your Profile</button>
+        <button v-on:click="gotoUsers">Find Friends</button>
         <h2>Todo Lists:</h2>
         <p>New List Name </p>
         <input Type="text" v-model="name" placeholder="Name goes here">
@@ -52,7 +53,6 @@
 
 <script>
 import axios from "axios";
-import VueExpandPanel from 'vue-expand-panel'
 const url = 'https://info3103.cs.unb.ca:24842/lists';
 export default {
     
@@ -68,6 +68,9 @@ export default {
     methods:{
         gotoProfile: function(){
             this.$router.push('/profile');
+        },
+        gotoUsers: function(){
+            this.$router.push('/users');
         },
         getLists: function(){
             let axiosConfig = {

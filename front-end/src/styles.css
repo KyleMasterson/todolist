@@ -30,15 +30,12 @@ header:after {
     float: right;
     padding-right: 5px;
     padding-left: 5px;
-    padding-top: 10px;
+    padding-top: 15px;
     vertical-align: middle;
 }
 .loginField {
     float: right;
     vertical-align: middle;
-}
-.navbar-brand {
-    display: inline-block;
 }
 .loginBtn {
     margin: 10px;
@@ -84,6 +81,8 @@ footer {
 }
 table {
     margin: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 table, th, td {
     border: 1px solid black;
@@ -92,5 +91,26 @@ th, td {
     padding: 5px;
 }
 .tbl-row:hover {
-    background-color: red;
+    background-color: lightgray;
+}
+.section {
+    border: 2px solid black;
+    margin: 5px;
+    background-color: rgba(43, 120, 194, 0.5);
+    height:25%;
+}
+.header-bar {
+    background-color: rgb(43, 120, 194);
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+.homepage {
+    background-color: grey;
+    color: rgb(43, 120, 194);
+    color: white;
+    height: 100%;
+}
+.blockquote-footer, .h2 {
+    color: white;
 }

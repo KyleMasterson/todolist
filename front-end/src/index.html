@@ -8,13 +8,13 @@
   <link rel="icon" href="<%= require('./images/favicon.ico') %>">
 </head>
 
-<body style="background-color:rgb(130, 130, 130)">
+<body>
   <div id="vueRoot">
-    <form class="navbar" style="background-color:rgb(187, 54, 54);display:flex;justify-content:flex-end;align-items:center;">
+    <form class="navbar header-bar">
         <p v-if="notLoggedIn" class="login">Username: </p>
         <input class="loginField" autocomplete="on" v-if="notLoggedIn" id="uLogin" v-model="user.username">
         <p v-if="notLoggedIn" class="login">Password: </p>
-        <input class="loginField" autocomplete="on" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password">
+        <input class="loginField" autocomplete="on" v-if="notLoggedIn" type="password" name="pLogin" v-model="user.password" v-on:keyup.enter="signIn">
         <a class="btn btn-primary loginBtn" v-if="notLoggedIn" v-on:click="signIn">Login</a>
         <a class="btn btn-primary loginBtn" v-else v-on:click="signOut">Logout</a>
     </form>

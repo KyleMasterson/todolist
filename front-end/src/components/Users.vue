@@ -1,10 +1,14 @@
 <template>
     <div>
-        <input v-model="filter" v-on:change="filterUsers">
+        <div class="profile">
+            <p>Filter Users</p>
+            <input class="search-bar" v-model="filter" v-on:keyup="filterUsers">
+            <button type="button" class="btn btn-primary" v-on:click="goHome">Back</button>
+        </div>
         <table>
             <tr>
                 <th>Username</th>
-                <th>screen_name</th>
+                <th>Screen Name</th>
             </tr>
             <tr class="tbl-row" v-for="user in users" v-on:click="getLists(user)">
                 <td>{{ user.username }}</td>
@@ -41,26 +45,38 @@ export default {
     data() {
         return {
             users: [],
+            allUsers: [],
             lists: [],
             items: [],
             filter: ''
         }
     },
     methods: {
-        filterUsers: function() {
-            lists = [];
-            items = [];
-	    temp = [];
-	    for(user in users) {
-	    	if (filter.contains(user.username) || 
-		filter.contains(user.screen_name) || 
-		user.username.contains(filter) || 
-		user.screen_name.contains(filter)) {
-			temp.push(user);
-		}
-	    }
+        goHome: function(){
+            this.$router.push('/home');
+        },
+        filterUsers: async function() {
+            this.lists = [];
+            this.items = [];
+            let temp = [];
+            this.users = this.allUsers;
+            for(var i = 0; i < this.users.length; i ++) {
+                if (this.filter.includes(this.users[i].username) || 
+                    this.users[i].username.includes(this.filter)) {
+
+                    temp.push(this.users[i]);
+                    continue;
+                }
+                if(this.users[i].screen_name !== null  && 
+                (this.filter.includes(this.users[i].screen_name) || 
+                this.users[i].screen_name.includes(this.filter))) {
+
+                    temp.push(this.users[i]);
+                    continue;
+                }
+	        }
 	    
-	    users = temp;
+	        this.users = temp;
         },
         getUsers: function() {
         let axiosConfig = {
@@ -72,6 +88,7 @@ export default {
             axios.get('https://info3103.cs.unb.ca:24842/users', axiosConfig)
                 .then((res) => {
                     this.users = res.data['users'];
+                    this.allUsers = this.users;
                 })
                 .catch((err) => {
                 });
