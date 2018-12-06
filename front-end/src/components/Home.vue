@@ -3,15 +3,18 @@
         <h1 v-if="$root.user.screenName===null||$root.user.screenName===''">Welcome home, {{ $root.user.username }}</h1>
 		<h1 v-else>Welcome home, {{ $root.user.screenName }}</h1>
         <br>
-        <button v-on:click="gotoProfile">Your Profile</button>
-        <button v-on:click="gotoUsers">Find Friends</button>
+        <button class="btn btn-primary" v-on:click="gotoProfile">Your Profile</button>
+        <button class="btn btn-primary" v-on:click="gotoUsers">Find Friends</button>
         <h2>Todo Lists:</h2>
-        <p>New List Name </p>
-        <input Type="text" v-model="name" placeholder="Name goes here">
-        <p>New List Discription</p>
-        <input Type="text" v-model="description" placeholder = "Description Goes Here">
-        <br>
-        <button v-on:click="addList">Add List</button>
+        <button class="btn btn-primary" v-on:click="listFlip">New List</button>
+        <div v-if="makeList === true">
+            <p>List Name </p>
+            <input Type="text" v-model="name" placeholder="Name">
+            <p>List Discription</p>
+            <input Type="text" v-model="description" placeholder = "Description">
+            <br>
+            <button class="btn btn-success" v-on:click="addList">Add List</button>
+        </div>
         <br>
         <br>
         <div id="table">
@@ -27,45 +30,86 @@
         
             <table>
                 <tbody>
-                    <tr v-for="row in lists" v-on:click="getItems(row)">
-                        <td>
+                    <tr class="tbl-row" v-for="row in lists" >
+                        <td v-on:click="getItems(row.id)">
                             {{ row.title }}
                         </td>
-                        <td>
+                        <td v-on:click="getItems(row.id)">
                             {{ row.description }}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" v-on:click="removeList(row.id)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <table>
-                <tr v-for="item in items">
-                    <td>
-                        {{item.title}}
-                    </td>
-                    <td>
-                        {{item.description}}
-                    </td>
-                </tr>
-            </table>
+
+            <br>
+            <div v-if="currList!=0">
+                <button class="btn btn-primary" v-on:click="itemFlip">New Item</button>
+                <div v-if="makeItem ===true">
+                    <p>Item Name</p>
+                    <input Type="text" v-model="itemName" placeholder="Name">
+                    <p>Item Discription</p>
+                    <input Type="text" v-model="itemDesc" placeholder = "Description">
+                    <br>
+                    <button class="btn btn-success" v-on:click="addItem">Add Item</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Items</td>
+                        </tr>
+                    </thead>
+                </table>
+                <table>
+                    <tr class="tbl-row"  v-for="item in items">
+                        <td>
+                            {{item.title}}
+                        </td>
+                        <td>
+                            {{item.description}}
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" v-on:click="removeItem(item.id)">Delete</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import axios from "axios";
-const url = 'https://info3103.cs.unb.ca:24842/lists';
+
 export default {
     
     data() {
         return {
             name: '',
             description: '',
+            itemName: '',
+            itemDesc: '',
+            currList: 0,
             lists: [],
             items: [],
-            res: ""
+            res: "",
+            makeList: false,
+            makeItem: false
         }
     },
     methods:{
+        listFlip: function(){
+            this.makeList = !this.makeList;
+        },
+        itemFlip: function(){
+            this.makeItem = !this.makeItem;
+        },
+        currZero: function(){
+            console.log("FUCK");
+            this.currList = 0;
+        },
         gotoProfile: function(){
             this.$router.push('/profile');
         },
@@ -80,7 +124,7 @@ export default {
 				}
             };
             const vm = this;
-			axios.get(url, {
+			axios.get('https://info3103.cs.unb.ca:24842/lists', {
 				params: {
 					username: this.$root.user.username
 				}
@@ -91,8 +135,25 @@ export default {
 			.catch((err) => {
 				vm.res= err;
             });
-
-
+        },
+        removeList: function(listId){
+            this.currZero();
+            let axiosConfig = {
+				headers: {
+					'Content-Type': 'application/json;charset=UTF-8',
+					"Access-Control-Allow-Origin": "*",
+				}
+            };
+            	axios.delete('https://info3103.cs.unb.ca:24842/lists/' + listId, {
+			}, axiosConfig)
+			.then((res) => {
+				this.res=res.data;
+			})
+			.catch((err) => {
+				this.res= err;
+            });
+            this.lists = [];
+            this.getLists();
         },
         addList: function(){
             let axiosConfig = {
@@ -101,7 +162,7 @@ export default {
 					"Access-Control-Allow-Origin": "*",
 				}
             };
-            	axios.post(url, {
+            	axios.post('https://info3103.cs.unb.ca:24842/lists', {
 				title: this.name,
 				description: this.description
 			}, axiosConfig)
@@ -115,6 +176,7 @@ export default {
             this.getLists();
             this.name ='';
             this.description='';
+            this.listFlip();
         },
         getItems: function(list){
             let axiosConfig = {
@@ -123,13 +185,55 @@ export default {
 					"Access-Control-Allow-Origin": "*",
 				}
 			};
-			axios.get('https://info3103.cs.unb.ca:24842/lists/' + list.id + '/items', axiosConfig)
+			axios.get('https://info3103.cs.unb.ca:24842/lists/' + list + '/items', axiosConfig)
 			.then((res) => {
 				this.items = res.data['items'];
 			})
 			.catch((err) => {
 				this.res= err;
-			});
+            });
+            this.currList=list;
+        },
+        addItem: function(){
+            let axiosConfig = {
+				headers: {
+					'Content-Type': 'application/json;charset=UTF-8',
+					"Access-Control-Allow-Origin": "*",
+				}
+            };
+            	axios.post('https://info3103.cs.unb.ca:24842/lists/' + this.currList + '/items', {
+				title: this.itemName,
+				description: this.itemDesc
+			}, axiosConfig)
+			.then((res) => {
+				this.res=res.data;
+			})
+			.catch((err) => {
+				this.res= err;
+            });
+            this.items = [];
+            this.itemName ='';
+            this.itemDesc='';
+            this.getItems(this.currList);
+            this.itemFlip(); 
+        },
+        removeItem: function(itemId){
+            let axiosConfig = {
+				headers: {
+					'Content-Type': 'application/json;charset=UTF-8',
+					"Access-Control-Allow-Origin": "*",
+				}
+            };
+            	axios.delete('https://info3103.cs.unb.ca:24842/lists/' + this.currList + '/items/' + itemId, {
+			}, axiosConfig)
+			.then((res) => {
+				this.res=res.data;
+			})
+			.catch((err) => {
+				this.res= err;
+            });
+            this.items = [];
+            this.getItems(this.currList);
         }
         
     },
