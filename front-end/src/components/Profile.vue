@@ -76,18 +76,17 @@ export default {
             };
             axios.delete('https://info3103.cs.unb.ca:24842/users/' + this.$root.user.username, axiosConfig)
                 .then((res) => {
-                this.$root.notLoggedIn = true;
-                this.$router.push('/');
+                    axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
+                        .then((res) => {
+                            this.$root.notLoggedIn = true;
+                            this.$router.push('/');
+                        })
+                        .catch((err) => {
+                        });
                 })
                 .catch((err) => {
                 });
-            axios.delete('https://info3103.cs.unb.ca:24842/signin', axiosConfig)
-                .then((res) => {
-                    router.push('/');
-                })
-                .catch((err) => {
-                    this.res = err;
-                });
+            
             }
     }
 }

@@ -15,7 +15,7 @@
                 <td>{{ user.screen_name }}</td>
             </tr>
         </table>
-        <table>
+        <table v-if="hasLists">
             <tr>
                 <th>List</th>
                 <th>Description</th>
@@ -25,7 +25,7 @@
                 <td>{{ list.description }}</td>
             </tr>
         </table>
-        <table>
+        <table v-if="hasItems">
             <tr>
                 <th>Item</th>
                 <th>Description</th>
@@ -48,7 +48,9 @@ export default {
             allUsers: [],
             lists: [],
             items: [],
-            filter: ''
+            filter: '',
+            hasLists:false,
+            hasItems: false
         }
     },
     methods: {
@@ -94,6 +96,7 @@ export default {
                 });
         },
         getLists: function(user) {
+            this.hasItems = false;
             let axiosConfig = {
 				headers: {
 					'Content-Type': 'application/json;charset=UTF-8',
@@ -106,10 +109,17 @@ export default {
 				}
 			}, axiosConfig)
 			.then((res) => {
-				this.lists = res.data['lists'];
+                this.lists = res.data['lists'];
+                if(this.lists.length > 0) {
+                    this.hasLists = true;
+                }
+                else {
+                    this.hasLists = false;
+                }
 			})
 			.catch((err) => {
-				this.res= err;
+                this.res= err;
+                this.hasLists = false;
 			});
         },
         getItems: function(list) {
@@ -121,10 +131,18 @@ export default {
 			};
 			axios.get('https://info3103.cs.unb.ca:24842/lists/' + list.id + '/items', axiosConfig)
 			.then((res) => {
-				this.items = res.data['items'];
+                this.items = res.data['items'];
+
+                if(this.items.length > 0) {
+                    this.hasItems = true;
+                }
+                else {
+                    this.hasItems = false;
+                }
 			})
 			.catch((err) => {
-				this.res= err;
+                this.res= err;
+                this.hasItems = false;
 			});
         }
     },
