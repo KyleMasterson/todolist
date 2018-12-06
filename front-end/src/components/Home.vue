@@ -55,6 +55,14 @@
                     <br>
                     <button class="btn btn-success" v-on:click="addItem">Add Item</button>
                 </div>
+                <div v-if="update">
+                    <p>Item Name</p>
+                    <input Type="text" v-model="itemName" placeholder="Name">
+                    <p>Item Discription</p>
+                    <input Type="text" v-model="itemDesc" placeholder = "Description">
+                    <br>
+                    <button class="btn btn-success" v-on:click="updateItem">Update Item</button>
+                </div>
                 <table>
                     <thead>
                         <tr>
@@ -63,12 +71,15 @@
                     </thead>
                 </table>
                 <table>
-                    <tr class="tbl-row"  v-for="item in items">
+                    <tr class="tbl-row" v-for="item in items">
                         <td>
                             {{item.title}}
                         </td>
                         <td>
                             {{item.description}}
+                        </td>
+                        <td>
+                            <button class="btn btn-success" v-on:click="updateFlip(item)">Update</button>
                         </td>
                         <td>
                             <button class="btn btn-danger" v-on:click="removeItem(item.id)">Delete</button>
@@ -96,10 +107,18 @@ export default {
             items: [],
             res: "",
             makeList: false,
-            makeItem: false
+            makeItem: false,
+            update: false,
+            currItem: 0
         }
     },
     methods:{
+        updateFlip: function(item){
+            this.update = !this.update;
+            this.currItem = item.id;
+            this.itemName = item.title;
+            this.itemDesc = item.description;
+        },
         listFlip: function(){
             this.makeList = !this.makeList;
         },
@@ -107,7 +126,6 @@ export default {
             this.makeItem = !this.makeItem;
         },
         currZero: function(){
-            console.log("FUCK");
             this.currList = 0;
         },
         gotoProfile: function(){
@@ -233,6 +251,26 @@ export default {
 				this.res= err;
             });
             this.items = [];
+            this.getItems(this.currList);
+        },
+        updateItem: function(){
+            let axiosConfig = {
+				headers: {
+					'Content-Type': 'application/json;charset=UTF-8',
+					"Access-Control-Allow-Origin": "*",
+				}
+            };
+            axios.put('https://info3103.cs.unb.ca:24842/lists/' + this.currList + '/items/' + this.currItem, { 
+                title: this.itemName,
+                description: this.itemDesc
+            }, axiosConfig)
+			.then((res) => {
+				this.res=res.data;
+			})
+			.catch((err) => {
+				this.res= err;
+            });
+            this.updateFlip(0);
             this.getItems(this.currList);
         }
         

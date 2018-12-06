@@ -58,6 +58,8 @@ export default {
             this.$router.push('/home');
         },
         filterUsers: async function() {
+            this.hasLists = false;
+            this.hasItems = false;
             this.lists = [];
             this.items = [];
             let temp = [];
