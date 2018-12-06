@@ -65,7 +65,10 @@ var app = new Vue({
           "Access-Control-Allow-Origin": "*",
         }
       };
-      axios.post('https://info3103.cs.unb.ca:24842/signin', user, axiosConfig)
+      axios.post('https://info3103.cs.unb.ca:24842/signin', { 
+        "username": this.user.username.toLowerCase(),
+        "password": this.user.password
+      }, axiosConfig)
         .then((res) => {
           app.res = res.data;
           router.push('/home');
