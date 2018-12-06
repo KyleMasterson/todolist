@@ -1,16 +1,9 @@
 html, body {
     height: 100%;
+    background-color: rgb(240, 240, 240);
 }
 header {
     min-height: 100%;
-    margin-bottom: -75px;
-    background: #ddd;
-    padding: 1em;
-}
-header:after {
-    content: "";
-    display: block;
-    height: 100px;
     padding: 1em;
 }
 #footerIcon {
@@ -39,12 +32,12 @@ header:after {
 }
 .loginBtn {
     margin: 10px;
-    background-color: rgb(80, 80, 80);
-    border-color: rgb(80, 80, 80);
+    background-color: rgb(120, 120, 120);
+    border-color: rgb(120, 120, 120);
 }
 .loginBtn:hover {
-    background-color: rgb(150, 150, 150);
-    border-color: rgb(80, 80, 80);
+    background-color: rgb(240, 240, 240);
+    border-color: rgb(120, 120, 120);
 }
 .loginBtn:active, 
 .loginBtn:focus, 
@@ -63,9 +56,9 @@ div {
     text-align: center;
 }
 footer {
-    position:absolute;
-    bottom:0;
-    width: 100%
+    position:relative;
+    width: 100%;
+    height: 80px;
 }
 .profile {
     text-align: center;
@@ -85,7 +78,7 @@ table {
     margin-right: auto;
 }
 table, th, td {
-    border: 1px solid black;
+    border: 1px solid gray;
 }
 th, td {
     padding: 5px;
@@ -94,22 +87,15 @@ th, td {
     background-color: lightgray;
 }
 .section {
-    border: 2px solid black;
+    border: 2px solid gray;
     margin: 5px;
     background-color: rgba(43, 120, 194, 0.5);
-    height:25%;
 }
 .header-bar {
     background-color: rgb(43, 120, 194);
     display:flex;
     justify-content:flex-end;
     align-items:center;
-}
-.homepage {
-    background-color: grey;
-    color: rgb(43, 120, 194);
-    color: white;
-    height: 100%;
 }
 .blockquote-footer, .h2 {
     color: white;
