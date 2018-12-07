@@ -1,0 +1,157 @@
+#%RAML 1.0
+title: "Todo list"
+description: "An API for managing a list of tasks that need to be done.\n"
+version: "1.1.0"
+mediaType:
+- "application/json"
+securitySchemes:
+  HTTP_BASIC:
+    type: "Basic Authentication"
+/signin:
+  displayName: "Logs the user in or creates new user"
+  description: "Allows for user to login or allows for a new user to be created"
+  get:
+    displayName: "user login"
+    description: "Logs the user in and returns a session cookie"
+    queryParameters:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        required: false
+  post:
+    displayName: "create user"
+    description: "creates a new user"
+    queryParameters:
+      email:
+        type: "string"
+      password:
+        type: "string"
+        required: false
+    responses:
+      200: {}
+      400: {}
+  delete:
+    displayName: "delete session"
+/users:
+  displayName: "handles users set operations"
+  description: "Not needed because user is stored in the session"
+  get:
+    displayName: "Get users"
+    description: "Retrieves a list of users based on a query, default returns all\
+      \ users"
+/users/{userId}:
+  uriParameters:
+    userId:
+      type: "string"
+  put:
+    displayName: "Update user info"
+    description: "Allows the currently logged in user to edit their information"
+  delete:
+    displayName: "Delete Account"
+    description: "Allows a user to delete their account"
+/lists:
+  get:
+    displayName: "Retrieves a users lists"
+    description: "Lists a list of a users lists"
+    responses:
+      200:
+        description: "Status 200"
+      400:
+        description: "Status 400"
+  post:
+    displayName: "Creates a new list"
+    description: "Creates a new list for the user"
+    queryParameters:
+      List name:
+        type: "string"
+        description: "Name of the list to be created"
+    responses:
+      200:
+        description: "Status 200"
+      400: {}
+    securedBy:
+    - "HTTP_BASIC"
+/lists/{listid}:
+  uriParameters:
+    listid:
+      type: "string"
+      description: "Identifier of the Task"
+      required: false
+      example: "47ee3550-b619-11e6-8408-0bdb025a7cfa"
+  get:
+    displayName: "Retrieves a list"
+    description: "Lists a list of all the items in the list"
+    responses:
+      200:
+        description: "Status 200"
+        body:
+          type: "object"
+          properties:
+            items:
+              type: "object"
+              required: false
+              properties:
+                itemid:
+                  type: "integer"
+                itemname:
+                  type: "string"
+                  required: false
+                duedate:
+                  type: "string"
+                  required: false
+      400:
+        description: "Status 400"
+  delete:
+    displayName: "Delete a list"
+    responses:
+      204: {}
+    securedBy:
+    - "HTTP_BASIC"
+/lists/{listid}/items:
+  uriParameters:
+    listid:
+      type: "string"
+  get:
+    displayName: "Get's all the items in a list"
+  post:
+    displayName: "Creates a new item in the list"
+/lists/{listid}/items/{itemid}:
+  displayName: "Retrieves an item from the list"
+  description: "Retrieves item (itemid) from list (listid)"
+  uriParameters:
+    listid:
+      type: "string"
+    itemid:
+      type: "string"
+  get:
+    displayName: "Retrieves an item's details"
+    description: "Lists the details of an item including due date and description"
+    responses:
+      200:
+        body:
+          type: "object"
+          properties:
+            itemid:
+              type: "integer"
+            itemname:
+              type: "string"
+              required: false
+      400: {}
+  put:
+    displayName: "Updates an item's description or due date"
+    queryParameters:
+      description:
+        type: "string"
+        required: false
+      duedate:
+        type: "date-only"
+        required: false
+    responses:
+      200: {}
+      400: {}
+  delete:
+    displayName: "Deletes an item"
+    responses:
+      204: {}
+      400: {}
