@@ -58,7 +58,7 @@ var app = new Vue({
           });
   },
     signIn: function () {
-      
+      user.username = user.username.toLowerCase();
       let axiosConfig = {
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
@@ -71,7 +71,6 @@ var app = new Vue({
           router.push('/home');
           app.notLoggedIn = false;
           user.password = '';
-          user.username = user.username.toLowerCase();
         })
         .catch((err) => {
           app.res = err;
@@ -113,8 +112,6 @@ var app = new Vue({
           app.notLoggedIn = true;
           router.push('/');
         })
-
-      return user.username;
       }
   },
   created: async function() {

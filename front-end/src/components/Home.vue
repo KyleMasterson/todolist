@@ -7,17 +7,17 @@
         <button class="btn btn-primary" v-on:click="gotoUsers">Find Friends</button>
         <h2>Todo Lists:</h2>
         <button class="btn btn-primary" v-on:click="listFlip">New List</button>
-        <div v-if="makeList === true">
+        <div v-if="makeList">
             <p>List Name </p>
-            <input Type="text" v-model="name" placeholder="Name">
+            <input Type="text" v-model="name" placeholder="Name" v-on:keyup.enter="addList">
             <p>List Discription</p>
-            <input Type="text" v-model="description" placeholder = "Description">
+            <input Type="text" v-model="description" placeholder = "Description" v-on:keyup.enter="addList">
             <br>
             <button class="btn btn-success" v-on:click="addList">Add List</button>
         </div>
         <br>
         <br>
-        <div id="table">
+        <div id="table" v-if="lists.length > 0">
             <table>
                 <thead>
                     <tr>
@@ -45,32 +45,32 @@
             </table>
 
             <br>
-            <div v-if="currList!=0">
+            <div v-if="currList!==0">
                 <button class="btn btn-primary" v-on:click="itemFlip">New Item</button>
                 <div v-if="makeItem ===true">
                     <p>Item Name</p>
-                    <input Type="text" v-model="itemName" placeholder="Name">
+                    <input Type="text" v-model="itemName" placeholder="Name" v-on:keyup.enter="addItem">
                     <p>Item Discription</p>
-                    <input Type="text" v-model="itemDesc" placeholder = "Description">
+                    <input Type="text" v-model="itemDesc" placeholder = "Description" v-on:keyup.enter="addItem">
                     <br>
                     <button class="btn btn-success" v-on:click="addItem">Add Item</button>
                 </div>
                 <div v-if="update">
                     <p>Item Name</p>
-                    <input Type="text" v-model="itemName" placeholder="Name">
+                    <input Type="text" v-model="itemName" placeholder="Name" v-on:keyup.enter="updateItem">
                     <p>Item Discription</p>
-                    <input Type="text" v-model="itemDesc" placeholder = "Description">
+                    <input Type="text" v-model="itemDesc" placeholder = "Description" v-on:keyup.enter="updateItem">
                     <br>
                     <button class="btn btn-success" v-on:click="updateItem">Update Item</button>
                 </div>
-                <table>
+                <table v-if="items.length > 0">
                     <thead>
                         <tr>
                             <td>Items</td>
                         </tr>
                     </thead>
                 </table>
-                <table>
+                <table v-if="items.length > 0">
                     <tr class="tbl-row" v-for="item in items">
                         <td>
                             {{item.title}}
@@ -121,6 +121,7 @@ export default {
         },
         listFlip: function(){
             this.makeList = !this.makeList;
+            this.currList = 0;
         },
         itemFlip: function(){
             this.makeItem = !this.makeItem;
@@ -174,13 +175,17 @@ export default {
             this.getLists();
         },
         addList: function(){
+            if(this.name === null || this.name === '') {
+                alert("Please enter a Name!");
+                return;
+            }
             let axiosConfig = {
 				headers: {
 					'Content-Type': 'application/json;charset=UTF-8',
 					"Access-Control-Allow-Origin": "*",
 				}
             };
-            	axios.post('https://info3103.cs.unb.ca:24842/lists', {
+            axios.post('https://info3103.cs.unb.ca:24842/lists', {
 				title: this.name,
 				description: this.description
 			}, axiosConfig)
@@ -213,6 +218,10 @@ export default {
             this.currList=list;
         },
         addItem: function(){
+            if(this.itemName === null || this.itemName === '') {
+                alert("Please enter a Name!");
+                return;
+            }
             let axiosConfig = {
 				headers: {
 					'Content-Type': 'application/json;charset=UTF-8',

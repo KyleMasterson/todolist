@@ -3,7 +3,7 @@
         <button v-if="updating" type="button" class="btn btn-success" v-on:click="hide">Update Account</button>
         <button v-else type="button" class="btn btn-success" v-on:click="getUser">Update Account</button>
         <label v-if="updating">New Display Name</label>
-        <input v-if="updating" id="newName" v-model="screen_name">        
+        <input v-if="updating" id="newName" v-model="screen_name" v-on:keyup.enter="updateUser">     
         <label v-if="updating">Current Display Name</label>
         <input v-if="updating" id="currentName" v-model="currentName" readonly>
         <button v-if="updating" type="button" class="btn btn-success" v-on:click="updateUser">Update Screen Name</button>
@@ -32,7 +32,7 @@ export default {
             this.deleting = !this.deleting;
         },
         hide: function () {
-            this.updating = false;
+            this.updating = !this.updating;
         },
         getUser: function () {
             let axiosConfig = {
@@ -43,8 +43,8 @@ export default {
             };
             axios.get('https://info3103.cs.unb.ca:24842/users?user=' + this.$root.user.username, this.screen_name, axiosConfig)
                 .then((res) => {
-                this.currentName = res.data['users'][0]['screen_name'];
-                this.updating = true;
+                    this.currentName = res.data['users'][0]['screen_name'];
+                    this.updating = true;
                 })
                 .catch((err) => {
                 });
@@ -62,7 +62,8 @@ export default {
             }
             axios.put('https://info3103.cs.unb.ca:24842/users/' + this.$root.user.username, { screen_name: this.screen_name }, axiosConfig)
                 .then((res) => {
-                    this.updating = false;
+                    this.currentName = this.screen_name;
+                    this.screen_name = '';
                 })
                 .catch((err) => {
                 });
