@@ -37,7 +37,7 @@ securitySchemes:
   displayName: "handles users set operations"
   description: "Not needed because user is stored in the session"
   get:
-    displayName: "get users"
+    displayName: "Get users"
     description: "Retrieves a list of users based on a query, default returns all\
       \ users"
 /users/{userId}:
@@ -45,7 +45,7 @@ securitySchemes:
     userId:
       type: "string"
   put:
-    displayName: "update user info"
+    displayName: "Update user info"
     description: "Allows the currently logged in user to edit their information"
   delete:
     displayName: "Delete Account"
@@ -80,7 +80,7 @@ securitySchemes:
       required: false
       example: "47ee3550-b619-11e6-8408-0bdb025a7cfa"
   get:
-    displayName: "retrieves a list of items in a list"
+    displayName: "Retrieves a list"
     description: "Lists a list of all the items in the list"
     responses:
       200:
@@ -108,21 +108,14 @@ securitySchemes:
       204: {}
     securedBy:
     - "HTTP_BASIC"
+/lists/{listid}/items:
+  uriParameters:
+    listid:
+      type: "string"
+  get:
+    displayName: "Get's all the items in a list"
   post:
-    displayName: "Create new item in the list"
-    queryParameters:
-      name:
-        type: "string"
-      duedate:
-        type: "date-only"
-        description: "Date the item is to be completed by"
-        required: false
-      description:
-        type: "string"
-        required: false
-    responses:
-      200: {}
-      400: {}
+    displayName: "Creates a new item in the list"
 /lists/{listid}/items/{itemid}:
   displayName: "Retrieves an item from the list"
   description: "Retrieves item (itemid) from list (listid)"
