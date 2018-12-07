@@ -124,9 +124,7 @@ router.beforeEach((to, from, next) => {
   if(to.path === '/home') {
     app.getName();
   }
-  if(to.path === '/') {
-    app.getUser();
-  }
+  app.getUser();
 
   next();
 })
